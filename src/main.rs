@@ -8,6 +8,10 @@ fn main() {
         io::stdout().flush().unwrap();
         let mut command = String::new();
         io::stdin().read_line(&mut command).expect("Unabel to Read");
-        println!("{}: command not found",command.trim());
+        let command = command.trim_end();
+        match command {
+            "exit" => break,
+            _ => println!("{}: command not found",command)
+        };
     }
 }
