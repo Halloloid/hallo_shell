@@ -1,11 +1,11 @@
 use is_executable::IsExecutable;
 use std::{env, process::Command};
 
+use crate::commands::{BUILT_IN};
+
 pub fn run(k: &str) {
     match k {
-        s if k == "exit" || k == "echo" || k == "type" => {
-            println!("{s} is a shell builtin")
-        }
+        s if BUILT_IN.contains(&k) => println!("{s} is a shell builtin"),
         _ => check_file(k, None),
     };
 }

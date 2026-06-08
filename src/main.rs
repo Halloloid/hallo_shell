@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
+
 mod commands;
 
 fn main() {
@@ -13,6 +14,7 @@ fn main() {
         let command = command.trim_end();
         match command {
             "exit" => break,
+            "pwd" => commands::handel_pwd::run(),
             k if k.starts_with("echo") => commands::handel_echo::run(&k[5..]),
             k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
             _ => {
