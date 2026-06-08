@@ -28,6 +28,7 @@ fn main() {
                                 if path.is_file() {
                                     println!("{} is {}", k, path.display());
                                     f = true;
+                                    break;
                                 }
                             }
                         }
