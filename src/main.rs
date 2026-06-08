@@ -1,3 +1,4 @@
+use std::env;
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
@@ -11,16 +12,32 @@ fn main() {
         let command = command.trim_end();
         match command {
             "exit" => break,
-            k if k.starts_with("echo") => println!("{}",&k[5..]),
+            k if k.starts_with("echo") => println!("{}", &k[5..]),
             k if k.starts_with("type") => {
-                match &k[5..] {
-                    "exit" => println!("exit is a shell builtin"),
-                    "echo" => println!("echo is a shell builtin"),
-                    "type" => println!("type is a shell builtin"),
-                    _ => println!("{}: not found",&k[5..])
-                };  
-            },
-            _ => println!("{}: command not found",command)
+                let k = &k[5..];
+                match k {
+                    s if k == "exit" || k == "echo" || k == "type" => {
+                        println!("{s} is a shell builtin")
+                    }
+                    _ => {
+                        let mut f = false;
+                        if let Ok(path_spliter) = env::var("PATH") {
+                            for mut path in env::split_paths(&path_spliter) {
+                                path.push(k);
+
+                                if path.is_file() {
+                                    println!("{} is {}", k, path.display());
+                                    f = true;
+                                }
+                            }
+                        }
+                        if f == false {
+                            println!("{}: not found", k);
+                        }
+                    }
+                };
+            }
+            _ => println!("{}: command not found", command),
         };
     }
 }
