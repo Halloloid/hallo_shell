@@ -64,7 +64,17 @@ fn relative_path(k: &str) {
     }
 }
 
-fn home_dir() {}
+fn home_dir() {
+    let home = env::home_dir();
+    let Some(home) = home else {
+        return;
+    };
+
+    let home = format!("{}",home.display());
+    let path = Path::new(&home);
+
+    check_path_and_exec(path);
+}
 
 fn check_path_and_exec(path: &Path) {
     if path.is_dir() {
