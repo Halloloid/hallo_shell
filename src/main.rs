@@ -15,7 +15,14 @@ fn main() {
             "exit" => break,
             k if k.starts_with("echo") => commands::handel_echo::run(&k[5..]),
             k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
-            _ => println!("{}: command not found", command),
+            _ => {
+                let args: Vec<&str> = command.split(" ").collect();
+                if args.len() == 1 {
+                    println!("{}: command not found", command);
+                } else {
+                    commands::handel_type::check_file(&args[0], Some(&args[1..]));
+                }
+            }
         };
     }
 }
