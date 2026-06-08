@@ -17,6 +17,7 @@ fn main() {
             "pwd" => commands::handel_pwd::run(),
             k if k.starts_with("echo") => commands::handel_echo::run(&k[5..]),
             k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
+            k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
             _ => {
                 let args: Vec<&str> = command.split(" ").collect();
                 if args.len() == 1 {
