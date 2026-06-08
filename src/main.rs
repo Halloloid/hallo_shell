@@ -4,6 +4,8 @@ use std::io::{self, Write};
 
 use is_executable::IsExecutable;
 
+mod commands;
+
 fn main() {
     // TODO: Uncomment the code below to pass the first stage
     loop {
@@ -14,7 +16,7 @@ fn main() {
         let command = command.trim_end();
         match command {
             "exit" => break,
-            k if k.starts_with("echo") => println!("{}", &k[5..]),
+            k if k.starts_with("echo") => commands::handel_echo::run(&k[5..]),
             k if k.starts_with("type") => {
                 let k = &k[5..];
                 match k {
