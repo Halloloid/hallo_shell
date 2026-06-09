@@ -1,12 +1,14 @@
 pub mod constantfns {
     pub fn split_by_args(command: &str) -> Vec<String> {
+
+        let quote = if command.contains('\"') { '\"' } else { '\'' };
         let mut args: Vec<String> = Vec::new();
         let mut curr_arg = String::new();
 
         let mut in_quote = false;
         for i in command.chars() {
             match i {
-                '\'' => in_quote = !in_quote,
+                i if i == quote => in_quote = !in_quote,
                 k if k.is_whitespace() => {
                     if !in_quote {
                         args.push(curr_arg);
@@ -66,7 +68,6 @@ pub mod constantfns {
             }
         }
     }
-
 
     pub fn trim_inside(k: &str) -> String {
         let k = k.trim();
