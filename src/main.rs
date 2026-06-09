@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
+
 use codecrafters_shell::constantfns;
 mod commands;
 
@@ -22,7 +23,7 @@ fn main() {
                 if arg.len() == 1 {
                     println!("{}: command not found", command);
                 } else {
-                    commands::handel_type::check_file(&arg[0], Some(&arg[1..]));
+                    constantfns::check_file(&arg[0], Some(&arg[1..]));
                 }
             }
         };
