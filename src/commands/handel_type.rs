@@ -10,7 +10,7 @@ pub fn run(k: &str) {
     };
 }
 
-pub fn check_file(k: &str, args: Option<&[&str]>) {
+pub fn check_file(k: &str, args: Option<&[String]>) {
     let mut f = false;
     if let Ok(path_spliter) = env::var("PATH") {
         for mut path in env::split_paths(&path_spliter) {
