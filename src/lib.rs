@@ -1,6 +1,39 @@
 pub mod constantfns {
     pub fn split_by_args(command: &str) -> Vec<String> {
 
+        let mut chars = command.chars().peekable();
+        let mut s = String::new();
+        let mut v: Vec<String> = Vec::new();
+    
+        while let Some(cur) = chars.next() {
+            if cur == '\\' {
+                if let Some(&nxt_chr) = chars.peek() {
+                    match nxt_chr {
+                        ' ' => s.push(' '),
+                        'n' => s.push('n'),
+                        '\\' => s.push('\\'),
+                        '\'' => s.push('\''),
+                        '\"' => s.push('\"'),
+                        _ => s.push(nxt_chr),
+                    }
+                    chars.next();
+                }
+            } else if cur == ' ' {
+                v.push(s);
+                s = String::new();
+            } else {
+                if cur == '\'' || cur == '\"'{
+                    let r =split_by_args_quotes(command);
+                    return r;
+                }
+                s.push(cur);
+            }
+        }
+        v.push(s);
+        v     
+    }
+
+    fn split_by_args_quotes(command: &str) -> Vec<String>{
         let quote = if command.contains('\"') { '\"' } else { '\'' };
         let mut args: Vec<String> = Vec::new();
         let mut curr_arg = String::new();
@@ -22,10 +55,10 @@ pub mod constantfns {
                 }
             }
         }
-
         args.push(curr_arg);
         args
     }
+    
 
     use is_executable::IsExecutable;
     use std::{env, process::Command};
