@@ -35,28 +35,51 @@ pub mod constantfns {
 
     fn split_by_args_quotes(command: &str) -> Vec<String>{
         let quote = if command.contains('\"') { '\"' } else { '\'' };
-        let mut args: Vec<String> = Vec::new();
-        let mut curr_arg = String::new();
-
+    
+        let mut chars = command.chars().peekable();
+    
         let mut in_quote = false;
-        for i in command.chars() {
-            match i {
-                i if i == quote => in_quote = !in_quote,
+        let mut msg = String::new();
+        let mut v: Vec<String> = Vec::new();
+    
+        while let Some(c) = chars.next() {
+            match c {
+                _ if c == quote => in_quote = !in_quote,
                 k if k.is_whitespace() => {
                     if !in_quote {
-                        args.push(curr_arg);
-                        curr_arg = String::new();
+                        v.push(msg);
+                        msg = String::new();
                     } else {
-                        curr_arg.push(i);
+                        msg.push(k);
+                    }
+                }
+                '\\' => {
+                    if in_quote && quote == '\'' {
+                        msg.push('\\');
+                    }else {
+                        if let Some(&nxt_chr) = chars.peek(){
+                            match nxt_chr {
+                                '\"' => msg.push('\"'),
+                                '\\' => msg.push('\\'),
+                                _ => {}
+                            }
+                            chars.next();
+                        }
+                    }
+                }
+                '\"' => {
+                    if in_quote && quote == '\'' {
+                        msg.push('\"');
                     }
                 }
                 _ => {
-                    curr_arg.push(i);
+                    msg.push(c);
                 }
             }
         }
-        args.push(curr_arg);
-        args
+    
+        v.push(msg);
+        v
     }
     
 

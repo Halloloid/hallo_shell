@@ -26,12 +26,21 @@ fn for_quote(arg: &str) {
                 }
             }
             '\\' => {
-                if in_quote {
+                if in_quote && quote == '\'' {
                     msg.push('\\');
+                }else {
+                    if let Some(&nxt_chr) = chars.peek(){
+                        match nxt_chr {
+                            '\"' => msg.push('\"'),
+                            '\\' => msg.push('\\'),
+                            _ => {}
+                        }
+                        chars.next();
+                    }
                 }
             }
             '\"' => {
-                if in_quote {
+                if in_quote && quote == '\'' {
                     msg.push('\"');
                 }
             }
@@ -42,7 +51,6 @@ fn for_quote(arg: &str) {
     }
 
     v.push(msg);
-    // print!("{:?}", v);
 
     msg = String::new();
     for c in &v {
