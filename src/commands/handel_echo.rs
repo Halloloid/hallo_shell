@@ -6,13 +6,15 @@ pub fn run(k: &str) {
 }
 
 fn for_quote(arg: &str) {
-    let quote = if arg.contains('\"') { '\"' } else { '\'' };
+    let quote = if arg.starts_with('\"') { '\"' } else { '\'' };
+
+    let mut chars = arg.chars().peekable();
 
     let mut in_quote = false;
     let mut msg = String::new();
     let mut v: Vec<String> = Vec::new();
 
-    for c in arg.chars() {
+    while let Some(c) = chars.next() {
         match c {
             _ if c == quote => in_quote = !in_quote,
             k if k.is_whitespace() => {
@@ -24,7 +26,14 @@ fn for_quote(arg: &str) {
                 }
             }
             '\\' => {
-                msg.push(quote);
+                if in_quote {
+                    msg.push('\\');
+                }
+            }
+            '\"' => {
+                if in_quote {
+                    msg.push('\"');
+                }
             }
             _ => {
                 msg.push(c);
@@ -33,6 +42,7 @@ fn for_quote(arg: &str) {
     }
 
     v.push(msg);
+    // print!("{:?}", v);
 
     msg = String::new();
     for c in &v {
