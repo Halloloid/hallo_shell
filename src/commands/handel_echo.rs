@@ -5,8 +5,7 @@ pub fn run(k: &str) {
     }
 }
 
-fn for_quote(arg: &str) {
-    let quote = if arg.starts_with('\"') { '\"' } else { '\'' };
+fn for_quote(arg: &str,quote:char) {
 
     let mut chars = arg.chars().peekable();
 
@@ -85,8 +84,12 @@ fn for_backslash(arg: &str) {
             v.push(s);
             s = String::new();
         } else {
-            if cur == '\"' || cur == '\'' {
-                for_quote(arg);
+            if cur == '\"'{
+                for_quote(arg,'\"');
+                return;
+            }
+            if cur == '\'' {
+                for_quote(arg,'\'');
                 return;
             }
             s.push(cur);

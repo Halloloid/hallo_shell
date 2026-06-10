@@ -22,8 +22,12 @@ pub mod constantfns {
                 v.push(s);
                 s = String::new();
             } else {
-                if cur == '\'' || cur == '\"'{
-                    let r =split_by_args_quotes(command);
+                if cur == '\''{
+                    let r =split_by_args_quotes(command,'\'');
+                    return r;
+                }
+                if cur == '\"'{
+                    let r =split_by_args_quotes(command,'\"');
                     return r;
                 }
                 s.push(cur);
@@ -33,9 +37,7 @@ pub mod constantfns {
         v     
     }
 
-    fn split_by_args_quotes(command: &str) -> Vec<String>{
-        let quote = if command.contains('\"') { '\"' } else { '\'' };
-    
+    fn split_by_args_quotes(command: &str,quote:char) -> Vec<String>{
         let mut chars = command.chars().peekable();
     
         let mut in_quote = false;
