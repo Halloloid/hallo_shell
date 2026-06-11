@@ -1,4 +1,0 @@
-commands
-commands.rs
-lib.rs
-main.rs

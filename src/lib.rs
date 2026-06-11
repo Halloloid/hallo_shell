@@ -88,9 +88,12 @@ pub mod constantfns {
 
     pub fn check_file(k: &str, args: Option<&[String]>) {
         let mut check_for_re = false;
+        let mut check_for_er_re = false;
+        let mut no_need = true;
         let mut i = "Nothing";
         let re = String::from(">");
         let re2 = String::from("1>");
+        let re3 = String::from("2>");
         let mut f = false;
         if let Ok(path_spliter) = env::var("PATH") {
             for mut path in env::split_paths(&path_spliter) {
@@ -100,8 +103,9 @@ pub mod constantfns {
                     if args.iter().len() != 0 {
                         let mut child = Command::new(k);
                         if let Some(ar) = args {
+                            check_for_er_re = ar.contains(&re3);
                             check_for_re = ar.contains(&re) || ar.contains(&re2);
-                            if check_for_re {
+                            if check_for_re || check_for_er_re {
                                 i = &ar[ar.len() - 1];
                                 child.args(&ar[..ar.len() - 2]);
                             } else {
@@ -115,8 +119,10 @@ pub mod constantfns {
                                     String::from_utf8_lossy(&output.stdout).into_owned();
                                 let stder_str =
                                     String::from_utf8_lossy(&output.stderr).into_owned();
-                                if check_for_re {
-                                    store_in_file(stdout_str, i.trim());
+                                if check_for_re || check_for_er_re {
+                                    std_store(check_for_er_re, stdout_str, stder_str.clone(), i);
+                                    no_need = !no_need;
+                                    
                                 } else if !stdout_str.is_empty() {
                                     if stdout_str.ends_with('\n') {
                                         print!("{}", stdout_str);
@@ -125,7 +131,7 @@ pub mod constantfns {
                                     }
                                 }
 
-                                if !stder_str.is_empty() {
+                                if !stder_str.is_empty() && !check_for_er_re && no_need{
                                     if stder_str.ends_with('\n') {
                                         eprint!("{}", stder_str);
                                     } else {
@@ -184,5 +190,30 @@ pub mod constantfns {
         }
 
         fs::write(file_path, output).expect("Unabel to write");
+    }
+
+    pub fn std_store(store_err: bool, stdout_str: String, stderr_str: String, file: &str) {
+        let store = if store_err { stderr_str.clone() } else { stdout_str.clone() };
+        
+        store_in_file(store, file.trim());
+
+        if store_err{
+            if !stdout_str.is_empty() {
+                if stdout_str.ends_with('\n') {
+                    eprint!("{}", stdout_str);
+                } else {
+                    eprintln!("{}", stdout_str);
+                }
+            }
+            
+        }else {
+            if !stderr_str.is_empty() {
+                if stderr_str.ends_with('\n') {
+                    eprint!("{}", stderr_str);
+                } else {
+                    eprintln!("{}", stderr_str);
+                }
+            }
+        }
     }
 }

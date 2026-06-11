@@ -3,11 +3,18 @@ use codecrafters_shell::constantfns::{self, check_file, split_by_args};
 pub fn run(k: &str) {
     if k.len() > 4 {
         let arg = k[5..].trim();
-        if arg.contains(">") || arg.contains("1>"){
+        if arg.contains(">") && !arg.contains("2>") {
             redirect_output(arg);
-            return;
+        } else if arg.contains("2>") {
+            let split_by_red: Vec<&str> = arg.split("2>").collect();
+            let mut file: Vec<String> = Vec::new();
+            file.push(format!("{}", split_by_red[1].trim()));
+            check_file("touch", Some(&file));
+            constantfns::store_in_file(String::from(""), &file[0]);
+            for_backslash(split_by_red[0]);
+        } else {
+            for_backslash(arg);
         }
-        for_backslash(arg);
     }
 }
 
@@ -24,21 +31,14 @@ fn for_backslash(arg: &str) {
     println!("{}", msg);
 }
 
-fn redirect_output(arg:&str){
-    let mut chr = "";
-    if arg.contains(">"){
-        chr = ">";
-    }
+fn redirect_output(arg: &str) {
+    let chr = if arg.contains("1>") { "1>" } else { ">" };
 
-    if arg.contains("1>"){
-        chr = "1>";
-    }
-    
-    let split_by_red:Vec<&str> = arg.split(chr).collect();
+    let split_by_red: Vec<&str> = arg.split(chr).collect();
 
     let arg = split_by_red[0];
-    let mut file : Vec<String> = Vec::new();
-    file.push(format!("{}",split_by_red[1].trim()));
+    let mut file: Vec<String> = Vec::new();
+    file.push(format!("{}", split_by_red[1].trim()));
 
     let v = split_by_args(arg);
     let mut msg = String::new();
@@ -51,5 +51,4 @@ fn redirect_output(arg:&str){
 
     check_file("touch", Some(&file));
     constantfns::store_in_file(msg, &file[0]);
-    
 }

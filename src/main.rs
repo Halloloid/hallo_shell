@@ -21,13 +21,13 @@ fn main() {
                 let arg = constantfns::split_by_args(command);
                 let re = String::from(">");
                 let re2 = String::from("1>");
+                let re3 = String::from("2>");
 
-                // println!("{:?}",arg);
 
                 if arg.len() == 1 {
                     println!("{}: command not found", command);
                 } else {
-                    if arg.contains(&re) || arg.contains(&re2){
+                    if arg.contains(&re) || arg.contains(&re2) || arg.contains(&re3){
                         let mut file: Vec<String> = Vec::new();
                         file.push(format!("{}", &arg[arg.len() - 1]));
 
