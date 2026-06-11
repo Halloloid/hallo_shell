@@ -1,8 +1,12 @@
-use codecrafters_shell::constantfns::split_by_args;
+use codecrafters_shell::constantfns::{self, check_file, split_by_args};
 
 pub fn run(k: &str) {
     if k.len() > 4 {
         let arg = k[5..].trim();
+        if arg.contains(">") || arg.contains("1>"){
+            redirect_output(arg);
+            return;
+        }
         for_backslash(arg);
     }
 }
@@ -18,4 +22,34 @@ fn for_backslash(arg: &str) {
     }
 
     println!("{}", msg);
+}
+
+fn redirect_output(arg:&str){
+    let mut chr = "";
+    if arg.contains(">"){
+        chr = ">";
+    }
+
+    if arg.contains("1>"){
+        chr = "1>";
+    }
+    
+    let split_by_red:Vec<&str> = arg.split(chr).collect();
+
+    let arg = split_by_red[0];
+    let mut file : Vec<String> = Vec::new();
+    file.push(format!("{}",split_by_red[1].trim()));
+
+    let v = split_by_args(arg);
+    let mut msg = String::new();
+    for c in &v {
+        if !c.is_empty() {
+            msg.push_str(c);
+            msg.push(' ');
+        }
+    }
+
+    check_file("touch", Some(&file));
+    constantfns::store_in_file(msg, &file[0]);
+    
 }
