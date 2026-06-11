@@ -10,7 +10,7 @@ pub fn run(k: &str) {
             let mut file: Vec<String> = Vec::new();
             file.push(format!("{}", split_by_red[1].trim()));
             check_file("touch", Some(&file));
-            constantfns::store_in_file(String::from(""), &file[0]);
+            constantfns::store_in_file(String::from(""), &file[0],false);
             for_backslash(split_by_red[0]);
         } else {
             for_backslash(arg);
@@ -32,7 +32,18 @@ fn for_backslash(arg: &str) {
 }
 
 fn redirect_output(arg: &str) {
-    let chr = if arg.contains("1>") { "1>" } else { ">" };
+    let mut append = false;
+    let chr = if arg.contains("1>>") {
+        append = !append;
+        "1>>" 
+    } else if arg.contains(">>"){
+        append = !append;
+        ">>" 
+    }else if arg.contains("1>") {
+        "1>"
+    }else {
+        ">"
+    };
 
     let split_by_red: Vec<&str> = arg.split(chr).collect();
 
@@ -50,5 +61,6 @@ fn redirect_output(arg: &str) {
     }
 
     check_file("touch", Some(&file));
-    constantfns::store_in_file(msg, &file[0]);
+    
+    constantfns::store_in_file(msg, &file[0],append);
 }
