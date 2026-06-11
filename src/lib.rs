@@ -90,6 +90,7 @@ pub mod constantfns {
         let mut check_for_re = false;
         let mut check_for_re_apend = false;
         let mut check_for_er_re = false;
+        let mut check_for_er_re_apend = false;
         let mut no_need = true;
         let mut i = "Nothing";
         let re1 = String::from(">");
@@ -97,6 +98,7 @@ pub mod constantfns {
         let re3 = String::from("2>");
         let re1_append = String::from(">>");
         let re2_append = String::from("1>>");
+        let re3_append = String::from("2>>");
         let mut f = false;
         if let Ok(path_spliter) = env::var("PATH") {
             for mut path in env::split_paths(&path_spliter) {
@@ -110,8 +112,9 @@ pub mod constantfns {
                             check_for_re = ar.contains(&re1) || ar.contains(&re2);
                             check_for_re_apend =
                                 ar.contains(&re1_append) || ar.contains(&re2_append);
+                            check_for_er_re_apend = ar.contains(&re3_append);
 
-                            if check_for_re || check_for_er_re || check_for_re_apend {
+                            if check_for_re || check_for_er_re || check_for_re_apend || check_for_er_re_apend{
                                 i = &ar[ar.len() - 1];
                                 child.args(&ar[..ar.len() - 2]);
                             } else {
@@ -125,10 +128,11 @@ pub mod constantfns {
                                     String::from_utf8_lossy(&output.stdout).into_owned();
                                 let stder_str =
                                     String::from_utf8_lossy(&output.stderr).into_owned();
-                                if check_for_re || check_for_er_re || check_for_re_apend {
+                                if check_for_re || check_for_er_re || check_for_re_apend || check_for_er_re_apend{
                                     std_store(
                                         check_for_er_re,
                                         check_for_re_apend,
+                                        check_for_er_re_apend,
                                         stdout_str,
                                         stder_str.clone(),
                                         i,
@@ -218,19 +222,20 @@ pub mod constantfns {
     pub fn std_store(
         store_err: bool,
         append: bool,
+        append_err :bool,
         stdout_str: String,
         stderr_str: String,
         file: &str,
     ) {
-        let store = if store_err {
+        let store = if store_err || append_err{
             stderr_str.clone()
         } else {
             stdout_str.clone()
         };
 
-        store_in_file(store, file.trim(), append);
+        store_in_file(store, file.trim(), append||append_err);
 
-        if store_err {
+        if store_err || append_err{
             if !stdout_str.is_empty() {
                 if stdout_str.ends_with('\n') {
                     eprint!("{}", stdout_str);
