@@ -324,7 +324,8 @@ use std::{env, process::Command};
                     }
                 }
             }
-
+            
+            candidates.sort();
             Ok((0,candidates))
         }
     }
