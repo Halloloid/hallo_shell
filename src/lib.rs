@@ -83,11 +83,12 @@ pub mod constantfns {
         v
     }
 
-    use is_executable::IsExecutable;
+    use is_executable::{IsExecutable, is_executable};
 use rustyline::highlight::Highlighter;
 use rustyline::hint::Hinter;
 use rustyline::validate::Validator;
-    use std::{env, process::Command};
+    use std::collections::HashSet;
+use std::{env, process::Command};
 
     pub fn check_file(k: &str, args: Option<&[String]>) {
         let mut check_for_re = false;
@@ -315,9 +316,36 @@ use rustyline::validate::Validator;
                 candidates.push("echo ".to_string());
             }else if "exit".starts_with(current_word) && !current_word.is_empty() {
                 candidates.push("exit ".to_string());
+            }else{
+                let executables = get_all_executabels();
+                for executable in executables{
+                    if executable.starts_with(current_word) && !current_word.is_empty(){
+                        candidates.push(format!("{} ",executable));
+                    }
+                }
             }
 
             Ok((0,candidates))
         }
+    }
+
+    fn get_all_executabels() -> HashSet<String>{
+        let mut set = HashSet::new();
+
+        if let Ok(spliter) = env::var("PATH"){
+            for path in env::split_paths(&spliter){
+                if let Ok(entires) = fs::read_dir(path){
+                    for entry in entires.flatten(){
+                        let path = entry.path();
+                        if is_executable(&path){
+                            if let Some(file_name) = path.file_name().and_then(|n| n.to_str()){
+                                set.insert(file_name.to_string());
+                            } 
+                        }
+                    }
+                }
+            }
+        }
+        set
     }
 }
