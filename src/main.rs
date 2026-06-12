@@ -1,16 +1,41 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
-use codecrafters_shell::constantfns;
+use rustyline::error::ReadlineError;
+use rustyline::{Editor};
+
+use codecrafters_shell::constantfns::{self, ShellCompleter, ShellHelper};
 mod commands;
 
 fn main() {
+    let config = rustyline::Config::builder()
+        .completion_type(rustyline::CompletionType::List)
+        .build();
+
+    let mut rl = Editor::with_config(config).unwrap();
+
+    rl.set_helper(Some(ShellHelper{
+        completer:ShellCompleter,
+    }));
+    
     loop {
-        print!("$ ");
-        io::stdout().flush().unwrap();
-        let mut command = String::new();
-        io::stdin().read_line(&mut command).expect("Unabel to Read");
+
+        let readline = rl.readline("$ ");
+
+        let command = match readline {
+            Ok(line) => line,
+            Err(ReadlineError::Interrupted) | Err(ReadlineError::Eof) => break,
+            Err(err)=>{
+                println!("Error: {:?}",err);
+                break;
+            }
+        };
+
         let command = command.trim();
+        if command.is_empty(){
+            continue;
+        }
+        
         match command {
             "exit" => break,
             "pwd" => commands::handel_pwd::run(),
@@ -23,11 +48,10 @@ fn main() {
                 let re2 = String::from("1>");
                 let re3 = String::from("2>");
 
-
                 if arg.len() == 1 {
                     println!("{}: command not found", command);
                 } else {
-                    if arg.contains(&re) || arg.contains(&re2) || arg.contains(&re3){
+                    if arg.contains(&re) || arg.contains(&re2) || arg.contains(&re3) {
                         let mut file: Vec<String> = Vec::new();
                         file.push(format!("{}", &arg[arg.len() - 1]));
 

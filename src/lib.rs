@@ -84,6 +84,9 @@ pub mod constantfns {
     }
 
     use is_executable::IsExecutable;
+use rustyline::highlight::Highlighter;
+use rustyline::hint::Hinter;
+use rustyline::validate::Validator;
     use std::{env, process::Command};
 
     pub fn check_file(k: &str, args: Option<&[String]>) {
@@ -251,6 +254,70 @@ pub mod constantfns {
                     eprintln!("{}", stderr_str);
                 }
             }
+        }
+    }
+
+    use rustyline::{self, Helper};
+    
+    pub struct ShellHelper{
+        pub completer:ShellCompleter,
+    }
+
+    impl Helper for ShellHelper {}
+
+    impl rustyline::completion::Completer for ShellHelper {
+
+        type Candidate = String;
+        
+        fn complete(
+            &self, // FIXME should be `&mut self`
+            line: &str,
+            pos: usize,
+            ctx: &rustyline::Context<'_>,
+        ) -> rustyline::Result<(usize, Vec<Self::Candidate>)>
+        {
+            self.completer.complete(line, pos, ctx)
+        }
+    }
+
+    impl Hinter for ShellHelper {
+        type Hint = String;
+        fn hint(&self, _line: &str, _pos: usize, _ctx: &rustyline::Context<'_>) -> Option<Self::Hint> {
+            None
+        }
+    }
+
+    impl Highlighter for ShellHelper {}
+
+    impl Validator for ShellHelper {
+        fn validate(&self, _ctx: &mut rustyline::validate::ValidationContext) -> rustyline::Result<rustyline::validate::ValidationResult> {
+            Ok(rustyline::validate::ValidationResult::Valid(None))
+        }
+    }
+
+    pub struct ShellCompleter;
+
+    impl rustyline::completion::Completer for ShellCompleter {
+        type Candidate = String;
+
+        fn complete(
+            &self, // FIXME should be `&mut self`
+            line: &str,
+            pos: usize,
+            _ctx: &rustyline::Context<'_>,
+        ) -> rustyline::Result<(usize, Vec<Self::Candidate>)>
+        {
+            let mut candidates = Vec::new();
+
+            let current_word = &line[..pos];
+            if "echo".starts_with(current_word) && !current_word.is_empty()
+            {
+                candidates.push("echo ".to_string());
+            }else if "exit".starts_with(current_word) && !current_word.is_empty() {
+                candidates.push("exit ".to_string());
+            }
+
+            Ok((0,candidates))
         }
     }
 }
