@@ -21,7 +21,7 @@ exit
 ### Core
 
 - Navigation: **`cd`**, **`pwd`**
-- Quoting: **`echo`** supports single and double quotes
+- Quoting: **`echo`** supports single and double quotes and handles backslashes (escape sequences)
 
 ### I/O redirection
 
