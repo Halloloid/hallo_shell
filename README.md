@@ -18,13 +18,25 @@ exit
 
 ## Features
 
-- Navigation using **cd** and **pwd**
-- Quoting support for **echo**
-- Error and output redirection of **stdout** and **stderr**:
-  - `>` and `1>` — redirect stdout (truncate)
-  - `2>` — redirect stderr (truncate)
-  - `>>` and `1>>` — append stdout
-  - `2>>` — append stderr
+### Core
+
+- Navigation: **`cd`**, **`pwd`**
+- Quoting: **`echo`** supports single and double quotes
+
+### I/O redirection
+
+- Redirect stdout and stderr using familiar operators:
+  - `>` / `1>`  — redirect **stdout** (truncate)
+  - `2>`        — redirect **stderr** (truncate)
+  - `>>` / `1>>`— append **stdout**
+  - `2>>`       — append **stderr**
+
+> Tip: `>` vs `>>` controls whether output overwrites or appends.
+
+### Auto-completion
+
+- `Tab`       — partial command completion
+- `Tab` + `Tab` — show matching commands for the current partial input
 
 ---
 
