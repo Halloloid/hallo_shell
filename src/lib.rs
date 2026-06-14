@@ -84,11 +84,11 @@ pub mod constantfns {
     }
 
     use is_executable::{IsExecutable, is_executable};
-use rustyline::highlight::Highlighter;
-use rustyline::hint::Hinter;
-use rustyline::validate::Validator;
+    use rustyline::highlight::Highlighter;
+    use rustyline::hint::Hinter;
+    use rustyline::validate::Validator;
     use std::collections::HashSet;
-use std::{env, process::Command};
+    use std::{env, process::Command};
 
     pub fn check_file(k: &str, args: Option<&[String]>) {
         let mut check_for_re = false;
@@ -118,7 +118,11 @@ use std::{env, process::Command};
                                 ar.contains(&re1_append) || ar.contains(&re2_append);
                             check_for_er_re_apend = ar.contains(&re3_append);
 
-                            if check_for_re || check_for_er_re || check_for_re_apend || check_for_er_re_apend{
+                            if check_for_re
+                                || check_for_er_re
+                                || check_for_re_apend
+                                || check_for_er_re_apend
+                            {
                                 i = &ar[ar.len() - 1];
                                 child.args(&ar[..ar.len() - 2]);
                             } else {
@@ -132,7 +136,11 @@ use std::{env, process::Command};
                                     String::from_utf8_lossy(&output.stdout).into_owned();
                                 let stder_str =
                                     String::from_utf8_lossy(&output.stderr).into_owned();
-                                if check_for_re || check_for_er_re || check_for_re_apend || check_for_er_re_apend{
+                                if check_for_re
+                                    || check_for_er_re
+                                    || check_for_re_apend
+                                    || check_for_er_re_apend
+                                {
                                     std_store(
                                         check_for_er_re,
                                         check_for_re_apend,
@@ -226,20 +234,20 @@ use std::{env, process::Command};
     pub fn std_store(
         store_err: bool,
         append: bool,
-        append_err :bool,
+        append_err: bool,
         stdout_str: String,
         stderr_str: String,
         file: &str,
     ) {
-        let store = if store_err || append_err{
+        let store = if store_err || append_err {
             stderr_str.clone()
         } else {
             stdout_str.clone()
         };
 
-        store_in_file(store, file.trim(), append||append_err);
+        store_in_file(store, file.trim(), append || append_err);
 
-        if store_err || append_err{
+        if store_err || append_err {
             if !stdout_str.is_empty() {
                 if stdout_str.ends_with('\n') {
                     eprint!("{}", stdout_str);
@@ -259,31 +267,34 @@ use std::{env, process::Command};
     }
 
     use rustyline::{self, Helper};
-    
-    pub struct ShellHelper{
-        pub completer:ShellCompleter,
+
+    pub struct ShellHelper {
+        pub completer: ShellCompleter,
     }
 
     impl Helper for ShellHelper {}
 
     impl rustyline::completion::Completer for ShellHelper {
-
         type Candidate = String;
-        
+
         fn complete(
             &self, // FIXME should be `&mut self`
             line: &str,
             pos: usize,
             ctx: &rustyline::Context<'_>,
-        ) -> rustyline::Result<(usize, Vec<Self::Candidate>)>
-        {
+        ) -> rustyline::Result<(usize, Vec<Self::Candidate>)> {
             self.completer.complete(line, pos, ctx)
         }
     }
 
     impl Hinter for ShellHelper {
         type Hint = String;
-        fn hint(&self, _line: &str, _pos: usize, _ctx: &rustyline::Context<'_>) -> Option<Self::Hint> {
+        fn hint(
+            &self,
+            _line: &str,
+            _pos: usize,
+            _ctx: &rustyline::Context<'_>,
+        ) -> Option<Self::Hint> {
             None
         }
     }
@@ -291,7 +302,10 @@ use std::{env, process::Command};
     impl Highlighter for ShellHelper {}
 
     impl Validator for ShellHelper {
-        fn validate(&self, _ctx: &mut rustyline::validate::ValidationContext) -> rustyline::Result<rustyline::validate::ValidationResult> {
+        fn validate(
+            &self,
+            _ctx: &mut rustyline::validate::ValidationContext,
+        ) -> rustyline::Result<rustyline::validate::ValidationResult> {
             Ok(rustyline::validate::ValidationResult::Valid(None))
         }
     }
@@ -306,47 +320,65 @@ use std::{env, process::Command};
             line: &str,
             pos: usize,
             _ctx: &rustyline::Context<'_>,
-        ) -> rustyline::Result<(usize, Vec<Self::Candidate>)>
-        {
+        ) -> rustyline::Result<(usize, Vec<Self::Candidate>)> {
             let mut candidates = Vec::new();
 
             let current_word = &line[..pos];
-            if "echo".starts_with(current_word) && !current_word.is_empty()
-            {
+            if "echo".starts_with(current_word) && !current_word.is_empty() {
                 candidates.push("echo ".to_string());
-            }else if "exit".starts_with(current_word) && !current_word.is_empty() {
+            } else if "exit".starts_with(current_word) && !current_word.is_empty() {
                 candidates.push("exit ".to_string());
-            }else{
+            } else {
                 let executables = get_all_executabels();
-                for executable in executables{
-                    if executable.starts_with(current_word) && !current_word.is_empty(){
-                        candidates.push(format!("{} ",executable));
+                for executable in executables {
+                    if executable.starts_with(current_word) && !current_word.is_empty() {
+                        candidates.push(format!("{} ", executable));
                     }
                 }
             }
-            
+
             candidates.sort();
-            Ok((0,candidates))
+            Ok((0, candidates))
         }
     }
 
-    fn get_all_executabels() -> HashSet<String>{
+    fn get_all_executabels() -> HashSet<String> {
         let mut set = HashSet::new();
 
-        if let Ok(spliter) = env::var("PATH"){
-            for path in env::split_paths(&spliter){
-                if let Ok(entires) = fs::read_dir(path){
-                    for entry in entires.flatten(){
+        if let Ok(spliter) = env::var("PATH") {
+            for path in env::split_paths(&spliter) {
+                if let Ok(entires) = fs::read_dir(path) {
+                    for entry in entires.flatten() {
                         let path = entry.path();
-                        if is_executable(&path){
-                            if let Some(file_name) = path.file_name().and_then(|n| n.to_str()){
+                        if is_executable(&path) {
+                            if let Some(file_name) = path.file_name().and_then(|n| n.to_str()) {
                                 set.insert(file_name.to_string());
-                            } 
+                            }
                         }
                     }
                 }
             }
         }
         set
+    }
+
+    fn get_all_root_file_and_dirs() -> Vec<String>{
+        let mut v:Vec<String> = Vec::new();
+
+        let mut child = Command::new("ls");
+        child.arg("-v");
+        match child.output() {
+            Ok(output)=>{
+                let output = String::from_utf8_lossy(&output.stdout).into_owned();
+
+                let k:Vec<&str> = output.split("\n").collect();
+
+                for i in k{
+                    v.push(format!("{i}"));
+                }
+            },
+            Err(e) => eprintln!("Unabel to get all dirs {}",e),
+        }
+        v
     }
 }
