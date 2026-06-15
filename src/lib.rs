@@ -344,17 +344,38 @@ pub mod constantfns {
             }else {
                 let last_space_idx = current_word.rfind(' ').unwrap();
                 let prefix = &current_word[last_space_idx+1..];
+                let mut found = false;
 
                 if prefix.is_empty(){
                     return Ok((pos,candidates));
                 }
 
-                let all_files = get_all_root_file_and_dirs();
+                let all_files = get_all_root_file_and_dirs(".");
 
                 for file in all_files{
                     if file.starts_with(prefix){
                         candidates.push(format!("{file} "));
+                        found = true;
                     }
+                }
+
+                if !found && prefix.contains('/'){
+                    let idx = prefix.rfind('/').unwrap();
+                    let path = &prefix[..idx];
+                    let prefix = &prefix[idx+1..];
+                    let all_files_in_path = get_all_root_file_and_dirs(path);
+
+                    
+                    for file in all_files_in_path{
+                        if file.starts_with(prefix){
+                            candidates.push(format!("{file} "));
+                        }
+                    }
+
+                    candidates.sort();
+    
+                    return Ok((last_space_idx+1+idx+1,candidates))
+                    
                 }
 
                 candidates.sort();
@@ -384,10 +405,10 @@ pub mod constantfns {
         set
     }
 
-    fn get_all_root_file_and_dirs() -> Vec<String>{
+    fn get_all_root_file_and_dirs(path:&str) -> Vec<String>{
         let mut v:Vec<String> = Vec::new();
 
-        if let Ok(entires) = fs::read_dir("."){
+        if let Ok(entires) = fs::read_dir(path){
             for entry in entires.flatten(){
                 if let Ok(name) = entry.file_name().into_string(){
                     v.push(name);
