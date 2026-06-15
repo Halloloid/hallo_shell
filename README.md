@@ -18,25 +18,36 @@ exit
 
 ## Features
 
-### Core
+**Core**
 
-- Navigation: **`cd`**, **`pwd`**
-- Quoting: **`echo`** supports single and double quotes and handles backslashes (escape sequences)
+- Navigation — `cd`, `pwd`
+- Quoting — `echo` supports single and double quotes and handles backslashes (escape sequences)
 
-### I/O redirection
+**I/O redirection**
 
-- Redirect stdout and stderr using familiar operators:
-  - `>` / `1>`  — redirect **stdout** (truncate)
-  - `2>`        — redirect **stderr** (truncate)
-  - `>>` / `1>>`— append **stdout**
-  - `2>>`       — append **stderr**
+- `>` / `1>`  — stdout (truncate)
+- `2>`        — stderr (truncate)
+- `>>` / `1>>`— append stdout
+- `2>>`       — append stderr
 
-> Tip: `>` vs `>>` controls whether output overwrites or appends.
+> Tip: use `>` to overwrite, `>>` to append
 
-### Auto-completion
+**Completion**
 
-- `Tab`       — partial command completion
-- `Tab` + `Tab` — show matching commands for the current partial input
+- Command completion
+  - `Tab` — complete the current partial command when a single match exists
+  - `Tab` + `Tab` — list all matching commands for the current partial input
+  - Matches include built-in commands and external commands too.
+
+- Filename completion
+  - `Tab` — complete file or directory names for the current argument
+  - Supports nested paths (e.g., `src/mai` -> `src/main.rs`) and multiple arguments
+  - `Tab` + `Tab` — show all matching filenames for the current argument
+  
+
+- Behavior 
+  - Completion is case-sensitive (matches the filesystem and command names)
+
 
 ---
 
