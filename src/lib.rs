@@ -324,21 +324,43 @@ pub mod constantfns {
             let mut candidates = Vec::new();
 
             let current_word = &line[..pos];
-            if "echo".starts_with(current_word) && !current_word.is_empty() {
-                candidates.push("echo ".to_string());
-            } else if "exit".starts_with(current_word) && !current_word.is_empty() {
-                candidates.push("exit ".to_string());
-            } else {
-                let executables = get_all_executabels();
-                for executable in executables {
-                    if executable.starts_with(current_word) && !current_word.is_empty() {
-                        candidates.push(format!("{} ", executable));
+            
+            if !current_word.contains(' '){
+                if "echo".starts_with(current_word) && !current_word.is_empty() {
+                    candidates.push("echo ".to_string());
+                } else if "exit".starts_with(current_word) && !current_word.is_empty() {
+                    candidates.push("exit ".to_string());
+                } else {
+                    let executables = get_all_executabels();
+                    for executable in executables {
+                        if executable.starts_with(current_word) && !current_word.is_empty() {
+                            candidates.push(format!("{} ", executable));
+                        }
                     }
                 }
-            }
+    
+                candidates.sort();
+                Ok((0, candidates))
+            }else {
+                let last_space_idx = current_word.rfind(' ').unwrap();
+                let prefix = &current_word[last_space_idx+1..];
 
-            candidates.sort();
-            Ok((0, candidates))
+                if prefix.is_empty(){
+                    return Ok((pos,candidates));
+                }
+
+                let all_files = get_all_root_file_and_dirs();
+
+                for file in all_files{
+                    if file.starts_with(prefix){
+                        candidates.push(format!("{file} "));
+                    }
+                }
+
+                candidates.sort();
+
+                Ok((last_space_idx+1,candidates))
+            }
         }
     }
 
@@ -365,19 +387,12 @@ pub mod constantfns {
     fn get_all_root_file_and_dirs() -> Vec<String>{
         let mut v:Vec<String> = Vec::new();
 
-        let mut child = Command::new("ls");
-        child.arg("-v");
-        match child.output() {
-            Ok(output)=>{
-                let output = String::from_utf8_lossy(&output.stdout).into_owned();
-
-                let k:Vec<&str> = output.split("\n").collect();
-
-                for i in k{
-                    v.push(format!("{i}"));
+        if let Ok(entires) = fs::read_dir("."){
+            for entry in entires.flatten(){
+                if let Ok(name) = entry.file_name().into_string(){
+                    v.push(name);
                 }
-            },
-            Err(e) => eprintln!("Unabel to get all dirs {}",e),
+            }
         }
         v
     }
