@@ -1,10 +1,11 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
+use codecrafters_shell::{executor, parser};
 use rustyline::error::ReadlineError;
 use rustyline::{Editor};
 
-use codecrafters_shell::constantfns::{self, ShellCompleter, ShellHelper};
+use codecrafters_shell::{shell_helper::ShellHelper,completion::ShellCompleter};
 mod commands;
 
 fn main() {
@@ -44,7 +45,7 @@ fn main() {
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
             k if k.starts_with("complete") => {},
             _ => {
-                let arg = constantfns::split_by_args(command);
+                let arg = parser::split_by_args(command);
                 let re = String::from(">");
                 let re2 = String::from("1>");
                 let re3 = String::from("2>");
@@ -56,9 +57,9 @@ fn main() {
                         let mut file: Vec<String> = Vec::new();
                         file.push(format!("{}", &arg[arg.len() - 1]));
 
-                        constantfns::check_file("touch", Some(&file));
+                        executor::check_file("touch", Some(&file));
                     }
-                    constantfns::check_file(&arg[0], Some(&arg[1..]));
+                    executor::check_file(&arg[0], Some(&arg[1..]));
                 }
             }
         };

@@ -1,4 +1,4 @@
-use codecrafters_shell::constantfns::{self, check_file, split_by_args};
+use codecrafters_shell::{parser::split_by_args,redirect,executor};
 
 pub fn run(k: &str) {
     if k.len() > 4 {
@@ -10,8 +10,8 @@ pub fn run(k: &str) {
             let split_by_red: Vec<&str> = arg.split(chr).collect();
             let mut file: Vec<String> = Vec::new();
             file.push(format!("{}", split_by_red[1].trim()));
-            check_file("touch", Some(&file));
-            constantfns::store_in_file(String::from(""), &file[0], false);
+            executor::check_file("touch", Some(&file));
+            redirect::store_in_file(String::from(""), &file[0], false);
             for_backslash(split_by_red[0]);
         } else {
             for_backslash(arg);
@@ -61,7 +61,7 @@ fn redirect_output(arg: &str) {
         }
     }
 
-    check_file("touch", Some(&file));
+    executor::check_file("touch", Some(&file));
 
-    constantfns::store_in_file(msg, &file[0], append);
+    redirect::store_in_file(msg, &file[0], append);
 }
