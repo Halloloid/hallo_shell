@@ -43,7 +43,7 @@ fn main() {
             k if k.starts_with("echo") => commands::handel_echo::run(&k),
             k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
-            k if k.starts_with("complete") => {},
+            k if k.starts_with("complete") => {commands::handel_complete::run(&k);},
             _ => {
                 let arg = parser::split_by_args(command);
                 let re = String::from(">");
