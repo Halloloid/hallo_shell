@@ -1,4 +1,5 @@
 # This is _**halloShell**_
+<img width="737" height="390" alt="image" src="https://github.com/user-attachments/assets/73bd6c02-fd9f-4535-aecc-b5fe6cc69345" />
 
 A minimal shell implemented in Rust.
 
@@ -47,7 +48,6 @@ exit
 
 - Behavior 
   - Completion is case-sensitive (matches the filesystem and command names)
-
 
 ---
 
