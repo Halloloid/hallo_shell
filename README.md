@@ -9,6 +9,7 @@ Right now this minimal shell has:
 ## Built-in commands
 
 ```
+hallo
 cd
 echo
 pwd

@@ -94,14 +94,11 @@ pub fn splash_screen() {
         logo_rows.push(row_string);
     }
 
-    let username = std::env::var("USER").unwrap_or_else(|_| std::env::var("USERNAME").unwrap_or_else(|_| "user".to_string()));
-    let hostname = sys_info::hostname().unwrap_or_else(|_| "hallo-terminal".to_string());
-    let user_host_line = format!("\x1B[1;32m{}@{}\x1B[0m", username, hostname);
+    
 
     let info_lines = vec![
-        user_host_line,
-        "-----------------------------".to_string(),
         "\x1B[1;35mWelcome to the halloShell!\x1B[0m".to_string(),
+        "-----------------------------".to_string(),
         "".to_string(),
         format!("\x1B[1;36mShell:\x1B[0m      HALLO SYSTEM v1.0.0"),
         format!("\x1B[1;36mEngine:\x1B[0m     Built in Rust"),
