@@ -64,10 +64,13 @@ impl rustyline::completion::Completer for ShellCompleter {
                         {
                             
                             let stdout_str = String::from_utf8_lossy(&output.stdout);
-                            if let Some(line) = stdout_str.lines().next() {
-                                candidates.push(format!("{} ", line.trim()));
-                                return Ok((current_word.len()-current_arg.len(), candidates));
+
+                            for line in stdout_str.lines(){
+                                candidates.push(format!("{} ",line.trim()));
                             }
+                            candidates.sort();
+                            
+                            return Ok((current_word.len()-current_arg.len(),candidates));
                         }
                     }
                 }
