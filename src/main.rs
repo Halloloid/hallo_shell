@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
-use std::io::{self, Write};
+use std::io::{self, Write,};
+use std::collections::HashMap;
 
 use codecrafters_shell::{executor, parser};
 use rustyline::error::ReadlineError;
@@ -18,6 +19,8 @@ fn main() {
     rl.set_helper(Some(ShellHelper{
         completer:ShellCompleter,
     }));
+
+    let mut store:HashMap<String,String> = HashMap::new();
     
     loop {
 
@@ -44,7 +47,7 @@ fn main() {
             k if k.starts_with("echo") => commands::handel_echo::run(&k),
             k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
-            k if k.starts_with("complete") => {commands::handel_complete::run(&k);},
+            k if k.starts_with("complete") => {commands::handel_complete::run(&k,&mut store);},
             _ => {
                 let arg = parser::split_by_args(command);
                 let re = String::from(">");
