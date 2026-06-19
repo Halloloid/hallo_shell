@@ -1,8 +1,7 @@
+use std::collections::{HashMap, HashSet};
 
-use std::collections::{HashSet,HashMap};
-
-pub struct ShellCompleter{
-    pub completeion:HashMap<String,String>,
+pub struct ShellCompleter {
+    pub completeion: HashMap<String, String>,
 }
 
 impl rustyline::completion::Completer for ShellCompleter {
@@ -34,16 +33,37 @@ impl rustyline::completion::Completer for ShellCompleter {
 
             candidates.sort();
             Ok((0, candidates))
-        }else {
+        } else {
+            if let Some(command) = current_word.split_whitespace().next() {
+                if current_word.ends_with(' ') || current_word.contains(' ') {
+                    if let Some(script_path) = self.completeion.get(command) {
+                        let words: Vec<&str> = current_word.split_whitespace().collect();
 
-            if let Some(command) = current_word.split_whitespace().next(){
-                if current_word.ends_with(' ') && current_word.split_whitespace().count() == 1{
-                    if let Some(script_path) = self.completeion.get(command){
-                        if let Ok(output) = std::process::Command::new(script_path).output(){
+                        let current_arg = if current_word.ends_with(' ') {
+                            ""
+                        } else {
+                            words.last().unwrap_or(&"")
+                        };
+
+                        let previus_arg = if current_word.ends_with(' ') {
+                            words.last().unwrap_or(&"")
+                        } else {
+                            if words.len() >= 2 {
+                                words[words.len() - 2]
+                            } else {
+                                ""
+                            }
+                        };
+                        if let Ok(output) = std::process::Command::new(script_path)
+                            .arg(command)
+                            .arg(current_arg)
+                            .arg(previus_arg)
+                            .output()
+                        {
                             let stdout_str = String::from_utf8_lossy(&output.stdout);
-                            if let Some(line) = stdout_str.lines().next(){
-                                candidates.push(format!("{} ",line.trim()));
-                                return Ok((pos,candidates));
+                            if let Some(line) = stdout_str.lines().next() {
+                                candidates.push(format!("{} ", line.trim()));
+                                return Ok((current_word.len()-current_arg.len(), candidates));
                             }
                         }
                     }
@@ -51,7 +71,6 @@ impl rustyline::completion::Completer for ShellCompleter {
             }
             let last_space_idx = current_word.rfind(' ').unwrap();
             let prefix = &current_word[last_space_idx + 1..];
-            
 
             if prefix.contains('/') {
                 let idx = prefix.rfind('/').unwrap();
@@ -70,7 +89,6 @@ impl rustyline::completion::Completer for ShellCompleter {
                 return Ok((last_space_idx + 1 + idx + 1, candidates));
             }
 
-
             let all_files = get_all_root_file_and_dirs(".");
 
             for file in all_files {
@@ -86,8 +104,8 @@ impl rustyline::completion::Completer for ShellCompleter {
     }
 }
 
-use std::env;
 use is_executable::is_executable;
+use std::env;
 use std::fs;
 
 fn get_all_executabels() -> HashSet<String> {
