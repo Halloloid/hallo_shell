@@ -58,8 +58,11 @@ impl rustyline::completion::Completer for ShellCompleter {
                             .arg(command)
                             .arg(current_arg)
                             .arg(previus_arg)
+                            .env("COMP_LINE", current_word)
+                            .env("COMP_POINT", pos.to_string())
                             .output()
                         {
+                            
                             let stdout_str = String::from_utf8_lossy(&output.stdout);
                             if let Some(line) = stdout_str.lines().next() {
                                 candidates.push(format!("{} ", line.trim()));
