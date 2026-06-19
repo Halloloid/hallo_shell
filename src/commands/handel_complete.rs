@@ -29,5 +29,13 @@ pub fn run(cmd:&str,rl:&mut Editor<ShellHelper,rustyline::history::DefaultHistor
             }
         }
 
+    } else if cmd.contains("-r"){
+        let idx = cmd.find("-r").unwrap();
+        let command = &cmd[idx+3..];
+        let command = command.to_string();
+
+        if let Some(helper) = rl.helper_mut(){
+            let _ = helper.completer.completeion.remove(&command);
+        }
     }
 }
