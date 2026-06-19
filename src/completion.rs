@@ -1,6 +1,9 @@
-pub struct ShellCompleter;
 
-use std::collections::HashSet;
+use std::collections::{HashSet,HashMap};
+
+pub struct ShellCompleter{
+    pub completeion:HashMap<String,String>,
+}
 
 impl rustyline::completion::Completer for ShellCompleter {
     type Candidate = String;
@@ -31,7 +34,21 @@ impl rustyline::completion::Completer for ShellCompleter {
 
             candidates.sort();
             Ok((0, candidates))
-        } else {
+        }else {
+
+            if let Some(command) = current_word.split_whitespace().next(){
+                if current_word.ends_with(' ') && current_word.split_whitespace().count() == 1{
+                    if let Some(script_path) = self.completeion.get(command){
+                        if let Ok(output) = std::process::Command::new(script_path).output(){
+                            let stdout_str = String::from_utf8_lossy(&output.stdout);
+                            if let Some(line) = stdout_str.lines().next(){
+                                candidates.push(format!("{} ",line.trim()));
+                                return Ok((pos,candidates));
+                            }
+                        }
+                    }
+                }
+            }
             let last_space_idx = current_word.rfind(' ').unwrap();
             let prefix = &current_word[last_space_idx + 1..];
             
