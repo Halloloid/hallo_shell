@@ -4,5 +4,6 @@ pub mod handel_pwd;
 pub mod handel_cd;
 pub mod handel_complete;
 pub mod handel_hallo;
+pub mod handel_jobs;
 
-const BUILT_IN:[&str;7] = ["type","echo","exit","pwd","cd","complete","hallo"];
+const BUILT_IN:[&str;8] = ["type","echo","exit","pwd","cd","complete","hallo","jobs"];
