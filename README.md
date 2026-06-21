@@ -47,13 +47,13 @@ This shell provides flexible completion for commands and filenames, plus a way t
 - Command completion
   - `Tab` — complete the current partial command when a single match exists
   - `Tab` + `Tab` — list matching commands for the current partial input
-  - Matches include built-in commands and external commands (when PATH lookup is enabled)
+  - Matches include built-in commands and external commands
 
 - Filename completion
   - `Tab` — complete file or directory names for the current argument
   - Supports nested paths and multiple arguments
   - `Tab` + `Tab` — show matching filenames for the current argument
-  - A completed directory may receive a trailing `/` to indicate it's a directory (implementation-dependent)
+  - A completed directory may receive a trailing `/` to indicate it's a directory
 
 - Custom completion (the `complete` built-in)
   - Register: `complete -C <script-path> <command>` — attach a completion script to `<command>`
@@ -64,7 +64,7 @@ This shell provides flexible completion for commands and filenames, plus a way t
 - Behavior & tips
   - Completion follows the filesystem and command name casing (case-sensitive on case-sensitive systems)
   - Use `Tab` to save typing and `Tab`+`Tab` to explore options
-  - if there is common pefix in the command for file completeion then the longest common prefix is used
+  - if there is common prefix in the command or for file/dirs completeion then the longest common prefix is used
 
 
 
