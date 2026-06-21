@@ -52,6 +52,7 @@ fn main() {
             k if k.starts_with("complete") => {commands::handel_complete::run(&k,&mut rl);},
             _ => {
                 let arg = parser::split_by_args(command);
+                // println!("{:?}",arg);
                 let re = String::from(">");
                 let re2 = String::from("1>");
                 let re3 = String::from("2>");
