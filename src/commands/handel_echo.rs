@@ -10,7 +10,7 @@ pub fn run(k: &str) {
             let split_by_red: Vec<&str> = arg.split(chr).collect();
             let mut file: Vec<String> = Vec::new();
             file.push(format!("{}", split_by_red[1].trim()));
-            executor::check_file("touch", Some(&file));
+            executor::check_file("touch", Some(&file),&mut vec![None]);
             redirect::store_in_file(String::from(""), &file[0], false);
             for_backslash(split_by_red[0]);
         } else {
@@ -61,7 +61,7 @@ fn redirect_output(arg: &str) {
         }
     }
 
-    executor::check_file("touch", Some(&file));
+    executor::check_file("touch", Some(&file),&mut vec![None]);
 
     redirect::store_in_file(msg, &file[0], append);
 }

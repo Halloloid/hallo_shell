@@ -22,6 +22,8 @@ fn main() {
         completer:ShellCompleter{completeion:store},
     }));
 
+    let mut back_jobs = Vec::<Option<(u8,u32,String)>>::new();
+
     
     loop {
 
@@ -45,14 +47,13 @@ fn main() {
             "exit" => break,
             "pwd" => commands::handel_pwd::run(),
             "hallo" => commands::handel_hallo::splash_screen(),
-            k if k.starts_with("jobs") =>commands::handel_jobs::run(),
+            k if k.starts_with("jobs") =>commands::handel_jobs::run(&back_jobs),
             k if k.starts_with("echo") => commands::handel_echo::run(&k),
             k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
             k if k.starts_with("complete") => {commands::handel_complete::run(&k,&mut rl);},
             _ => {
                 let arg = parser::split_by_args(command);
-                // println!("{:?}",arg);
                 let re = String::from(">");
                 let re2 = String::from("1>");
                 let re3 = String::from("2>");
@@ -64,9 +65,9 @@ fn main() {
                         let mut file: Vec<String> = Vec::new();
                         file.push(format!("{}", &arg[arg.len() - 1]));
 
-                        executor::check_file("touch", Some(&file));
+                        executor::check_file("touch", Some(&file),&mut vec![None]);
                     }
-                    executor::check_file(&arg[0], Some(&arg[1..]));
+                    executor::check_file(&arg[0], Some(&arg[1..]),&mut back_jobs);
                 }
             }
         };

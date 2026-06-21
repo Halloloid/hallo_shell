@@ -3,7 +3,7 @@ use std::{env, process::Command};
 
 use crate::redirect;
 
-pub fn check_file(k: &str, args: Option<&[String]>) {
+pub fn check_file(k: &str, args: Option<&[String]>,back_jobs:&mut Vec<Option<(u8,u32,String)>>) {
     let mut check_for_re = false;
     let mut check_for_re_apend = false;
     let mut check_for_er_re = false;
@@ -44,11 +44,20 @@ pub fn check_file(k: &str, args: Option<&[String]>) {
                                 child.args(&ar[..ar.len() - 1]);
                                 match child.spawn() {
                                     Ok(child) => {
-                                        let job_no = 1;
+                                        let job_no = back_jobs.len()+1;
                                         let pid = child.id();
 
                                         println!("[{}] {}", job_no, pid);
                                         back = true;
+                                        
+                                        let mut full_cmd = String::new();
+                                        full_cmd.push_str(k);
+                                        full_cmd.push(' ');
+
+                                        ar.iter().for_each(|x| {full_cmd.push_str(x);full_cmd.push(' ');});
+
+                                        back_jobs.push(Some((job_no as u8,pid,full_cmd)));
+                                        
                                     }
                                     Err(e) => println!("{}: command not found", e),
                                 }
