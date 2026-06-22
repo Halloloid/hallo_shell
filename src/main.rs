@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use std::io::{self, Write,};
-use std::collections::HashMap;
+use std::{collections::HashMap,process::Child};
 
 use codecrafters_shell::{executor, parser};
 use rustyline::error::ReadlineError;
@@ -22,7 +22,7 @@ fn main() {
         completer:ShellCompleter{completeion:store},
     }));
 
-    let mut back_jobs = Vec::<Option<(u8,u32,String)>>::new();
+    let mut back_jobs = Vec::<Option<(u8,Child,String)>>::new();
 
     
     loop {
@@ -47,7 +47,7 @@ fn main() {
             "exit" => break,
             "pwd" => commands::handel_pwd::run(),
             "hallo" => commands::handel_hallo::splash_screen(),
-            k if k.starts_with("jobs") =>commands::handel_jobs::run(&back_jobs),
+            k if k.starts_with("jobs") =>commands::handel_jobs::run(&mut back_jobs),
             k if k.starts_with("echo") => commands::handel_echo::run(&k),
             k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),

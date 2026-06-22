@@ -1,9 +1,9 @@
 use is_executable::IsExecutable;
-use std::{env, process::Command};
+use std::{env, process::{Command,Child}};
 
 use crate::redirect;
 
-pub fn check_file(k: &str, args: Option<&[String]>,back_jobs:&mut Vec<Option<(u8,u32,String)>>) {
+pub fn check_file(k: &str, args: Option<&[String]>,back_jobs:&mut Vec<Option<(u8,Child,String)>>) {
     let mut check_for_re = false;
     let mut check_for_re_apend = false;
     let mut check_for_er_re = false;
@@ -56,7 +56,7 @@ pub fn check_file(k: &str, args: Option<&[String]>,back_jobs:&mut Vec<Option<(u8
 
                                         ar.iter().for_each(|x| {full_cmd.push_str(x);full_cmd.push(' ');});
 
-                                        back_jobs.push(Some((job_no as u8,pid,full_cmd)));
+                                        back_jobs.push(Some((job_no as u8,child,full_cmd)));
                                         
                                     }
                                     Err(e) => println!("{}: command not found", e),
