@@ -1,6 +1,8 @@
+use std::process::Child;
+
 use codecrafters_shell::{parser::split_by_args,redirect,executor};
 
-pub fn run(k: &str) {
+pub fn run(k: &str,back_jobs:&mut Vec<Option<(u8,Child,String)>>) {
     if k.len() > 4 {
         let arg = k[5..].trim();
         if arg.contains(">") && !arg.contains("2>") {
@@ -15,6 +17,24 @@ pub fn run(k: &str) {
             for_backslash(split_by_red[0]);
         } else {
             for_backslash(arg);
+        }
+
+        let mut index_to_remove = Vec::new();
+        for (index,job) in back_jobs.iter_mut().enumerate(){
+            if let Some(job) = job{
+                match job.1.try_wait() {
+                    Ok(Some(_status))=>{
+                        println!("[{}]+  Done                 {}",job.0,&job.2[..job.2.len()-2]);
+    
+                        index_to_remove.push(index);
+                    },
+                    _ => {}
+                }
+            }
+        }
+
+        for i in index_to_remove.into_iter().rev(){
+            back_jobs.remove(i);
         }
     }
 }

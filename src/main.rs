@@ -48,7 +48,7 @@ fn main() {
             "pwd" => commands::handel_pwd::run(),
             "hallo" => commands::handel_hallo::splash_screen(),
             k if k.starts_with("jobs") =>commands::handel_jobs::run(&mut back_jobs),
-            k if k.starts_with("echo") => commands::handel_echo::run(&k),
+            k if k.starts_with("echo") => commands::handel_echo::run(&k,&mut back_jobs),
             k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
             k if k.starts_with("complete") => {commands::handel_complete::run(&k,&mut rl);},
