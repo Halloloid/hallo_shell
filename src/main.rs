@@ -2,11 +2,11 @@
 use std::io::{self, Write,};
 use std::{collections::HashMap,process::Child};
 
-use codecrafters_shell::{executor, parser};
+use hallo_shell::{executor, parser};
 use rustyline::error::ReadlineError;
 use rustyline::{Editor};
 
-use codecrafters_shell::{shell_helper::ShellHelper,completion::ShellCompleter};
+use hallo_shell::{shell_helper::ShellHelper,completion::ShellCompleter};
 mod commands;
 
 fn main() {

@@ -1,5 +1,5 @@
 use crate::commands::BUILT_IN;
-use codecrafters_shell::executor::check_file;
+use hallo_shell::executor::check_file;
 
 pub fn run(k: &str) {
     match k {
