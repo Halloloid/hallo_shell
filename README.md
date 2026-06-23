@@ -17,12 +17,13 @@ echo
 pwd
 type
 complete
+jobs
 exit
 ```
 
 ## Features
 
-**Core**
+### **Core**
 
 - Navigation — `cd`, `pwd`
 - Quoting / escaping — `echo` supports single & double quotes and handles backslashes (escape sequences)
@@ -30,8 +31,9 @@ exit
 - `type` — check whether a command is built-in
 - `complete` — register or inspect custom completions
 - `exit` — quit the shell
+- `jobs`- helps to see all running and done jobs which are in the bacground
 
-**I/O redirection**
+### **I/O redirection**
 
 - `>` / `1>`  — stdout (truncate)
 - `>>` / `1>>` — stdout (append)
@@ -40,7 +42,7 @@ exit
 
 > Tip: use `>` to overwrite, `>>` to append
 
-**Completion**
+### **Completion**
 
 This shell provides flexible completion for commands and filenames, plus a way to register custom completion scripts.
 
@@ -66,8 +68,15 @@ This shell provides flexible completion for commands and filenames, plus a way t
   - Use `Tab` to save typing and `Tab`+`Tab` to explore options
   - if there is common prefix in the command or for file/dirs completeion then the longest common prefix is used
 
-
-
+### **Background Jobs**
+- if you end a command with `&` (e.g `<command> &`) then that is executed in the background it will generate a job number and a pid and we can still use the shell for other commands
+- if you want to see all the commands running in the bacground you can use the built-in command `jobs` to see
+- to check the recent jobs
+   - `+` for the recent command that gone to background
+   - `-` for the second recent command
+   - ` ` space for rest of the commands
+- if it has a Status `Running` then its still running in Background else then `Done` means its completed
+- if the bacground job is completed it prints with `Done` before running another command
 ---
 
 ## _More Features are Coming Soon_
