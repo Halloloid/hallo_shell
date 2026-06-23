@@ -69,14 +69,17 @@ This shell provides flexible completion for commands and filenames, plus a way t
   - if there is common prefix in the command or for file/dirs completeion then the longest common prefix is used
 
 ### **Background Jobs**
-- if you end a command with `&` (e.g `<command> &`) then that is executed in the background it will generate a job number and a pid and we can still use the shell for other commands
-- if you want to see all the commands running in the bacground you can use the built-in command `jobs` to see
-- to check the recent jobs
-   - `+` for the recent command that gone to background
-   - `-` for the second recent command
-   - ` ` space for rest of the commands
-- if it has a Status `Running` then its still running in Background else then `Done` means its completed
-- if the bacground job is completed it prints with `Done` before running another command
+
+- Append `&` to run a command in the background, e.g. `sleep 10 &`. The shell prints a job number and a PID, and you can continue using the shell while the job runs.
+- Use the built-in `jobs` command to list background and recently completed jobs.
+- Job specifiers:
+  - `+` — the most recent background job
+  - `-` — the second most recent background job
+  - (space) — other jobs
+- Job status:
+  - `Running` — the job is still running in the background
+  - `Done` — the job has completed
+- When a background job completes, the shell prints `Done` before showing the next prompt.
 ---
 
 ## _More Features are Coming Soon_
