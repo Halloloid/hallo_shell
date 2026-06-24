@@ -1,8 +1,9 @@
 
 use crate::shell_helper::ShellHelper;
 use rustyline::Editor;
+use std::io::Write;
 
-pub fn run(cmd:&str,rl:&mut Editor<ShellHelper,rustyline::history::DefaultHistory>){
+pub fn run<W:Write>(cmd:&str,rl:&mut Editor<ShellHelper,rustyline::history::DefaultHistory>,destination:&mut W){
     
     if cmd.contains("-C"){
         let idx = cmd.rfind("-C").unwrap();
@@ -23,7 +24,7 @@ pub fn run(cmd:&str,rl:&mut Editor<ShellHelper,rustyline::history::DefaultHistor
 
         if let Some(helper) = rl.helper_mut(){
             if let Some(path) = helper.completer.completeion.get(&command){
-                 println!("complete -C \'{}\' {}",path,command);
+                 writeln!(destination,"complete -C \'{}\' {}",path,command).unwrap();
             }else {
                 eprintln!("complete: {}: no completion specification",command);
             }

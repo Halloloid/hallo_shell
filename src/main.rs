@@ -45,13 +45,13 @@ fn main() {
         match command {
             _ if command.contains(" | ") => pipelines::run(command),
             "exit" => break,
-            "pwd" => commands::handel_pwd::run(),
+            "pwd" => commands::handel_pwd::run(&mut io::stdout()),
             "hallo" => commands::handel_hallo::splash_screen(),
-            k if k.starts_with("jobs") =>commands::handel_jobs::run(&mut back_jobs),
-            k if k.starts_with("echo") => commands::handel_echo::run(&k,&mut back_jobs),
-            k if k.starts_with("type") => commands::handel_type::run(&k[5..]),
+            k if k.starts_with("jobs") =>commands::handel_jobs::run(&mut back_jobs,&mut io::stdout()),
+            k if k.starts_with("echo") => commands::handel_echo::run(&k,&mut back_jobs,&mut io::stdout()),
+            k if k.starts_with("type") => commands::handel_type::run(&k[5..],&mut io::stdout()),
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
-            k if k.starts_with("complete") => {commands::handel_complete::run(&k,&mut rl);},
+            k if k.starts_with("complete") => {commands::handel_complete::run(&k,&mut rl,&mut io::stdout());},
             _ => {
                 let arg = parser::split_by_args(command);
                 let re = String::from(">");

@@ -59,7 +59,7 @@ pub fn check_file(k: &str, args: Option<&[String]>,back_jobs:&mut Vec<Option<(u8
                                         back_jobs.push(Some((job_no as u8,child,full_cmd)));
                                         
                                     }
-                                    Err(e) => println!("{}: command not found", e),
+                                    Err(e) => eprintln!("{}: command not found", e),
                                 }
                             } else {
                                 child.args(ar);
@@ -105,7 +105,7 @@ pub fn check_file(k: &str, args: Option<&[String]>,back_jobs:&mut Vec<Option<(u8
                                 }
                             }
                             Err(e) => {
-                                println!("Failed to process {}", e)
+                                eprintln!("Failed to process {}", e)
                             }
                         }
                     }
@@ -126,7 +126,7 @@ pub fn check_file(k: &str, args: Option<&[String]>,back_jobs:&mut Vec<Option<(u8
                 args.iter().len() + 1
             );
         } else {
-            println!("{}: not found", k);
+            eprintln!("{}: not found", k);
         }
     }
 }

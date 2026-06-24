@@ -1,8 +1,8 @@
-use std::env;
+use std::{env,io::Write};
 
-pub fn run(){
+pub fn run<W:Write>(desination:&mut W){
     match env::current_dir() {
-        Ok(path) => println!("{}",path.display()),
+        Ok(path) => writeln!(desination,"{}",path.display()).unwrap(),
         Err(e) => eprintln!("Cannot Retive Current Directory {}.",e),
     };
 }

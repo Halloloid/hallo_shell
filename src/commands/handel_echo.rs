@@ -1,8 +1,8 @@
-use std::process::Child;
+use std::{process::Child,io::Write};
 
 use crate::{parser::split_by_args,redirect,executor};
 
-pub fn run(k: &str,back_jobs:&mut Vec<Option<(u8,Child,String)>>) {
+pub fn run<W:Write>(k: &str,back_jobs:&mut Vec<Option<(u8,Child,String)>>,destination:&mut W) {
     if k.len() > 4 {
         let arg = k[5..].trim();
         if arg.contains(">") && !arg.contains("2>") {
@@ -14,9 +14,9 @@ pub fn run(k: &str,back_jobs:&mut Vec<Option<(u8,Child,String)>>) {
             file.push(format!("{}", split_by_red[1].trim()));
             executor::check_file("touch", Some(&file),&mut vec![None]);
             redirect::store_in_file(String::from(""), &file[0], false);
-            for_backslash(split_by_red[0]);
+            for_backslash(split_by_red[0],destination);
         } else {
-            for_backslash(arg);
+            for_backslash(arg,destination);
         }
 
         let mut index_to_remove = Vec::new();
@@ -24,7 +24,7 @@ pub fn run(k: &str,back_jobs:&mut Vec<Option<(u8,Child,String)>>) {
             if let Some(job) = job{
                 match job.1.try_wait() {
                     Ok(Some(_status))=>{
-                        println!("[{}]+  Done                 {}",job.0,&job.2[..job.2.len()-2]);
+                        writeln!(destination,"[{}]+  Done                 {}",job.0,&job.2[..job.2.len()-2]).unwrap();
     
                         index_to_remove.push(index);
                     },
@@ -39,7 +39,7 @@ pub fn run(k: &str,back_jobs:&mut Vec<Option<(u8,Child,String)>>) {
     }
 }
 
-fn for_backslash(arg: &str) {
+fn for_backslash<W:Write>(arg: &str,destination:&mut W) {
     let v = split_by_args(arg);
     let mut msg = String::new();
     for c in &v {
@@ -49,7 +49,7 @@ fn for_backslash(arg: &str) {
         }
     }
 
-    println!("{}", msg);
+    writeln!(destination,"{}", msg).unwrap();
 }
 
 fn redirect_output(arg: &str) {

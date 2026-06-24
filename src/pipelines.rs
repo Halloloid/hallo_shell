@@ -16,6 +16,9 @@ pub fn run(cmd: &str) {
     }
 
 
+    if BUILT_IN.contains(&cmds_and_args[0].0){
+        
+    }
 
     let mut child1 = Command::new(cmds_and_args[0].0);
     let mut child2 = Command::new(cmds_and_args[1].0);
