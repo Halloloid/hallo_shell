@@ -2,7 +2,7 @@
 use std::io::{self, Write,};
 use std::{collections::HashMap,process::Child};
 
-use hallo_shell::{executor, parser};
+use hallo_shell::{executor, parser,pipelines};
 use rustyline::error::ReadlineError;
 use rustyline::{Editor};
 
@@ -44,6 +44,7 @@ fn main() {
         }
         
         match command {
+            _ if command.contains(" | ") => pipelines::run(command),
             "exit" => break,
             "pwd" => commands::handel_pwd::run(),
             "hallo" => commands::handel_hallo::splash_screen(),
