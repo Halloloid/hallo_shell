@@ -2,12 +2,11 @@
 use std::io::{self, Write,};
 use std::{collections::HashMap,process::Child};
 
-use hallo_shell::{executor, parser,pipelines};
+use hallo_shell::{commands, executor, parser, pipelines,shell_helper::ShellHelper,completion::ShellCompleter};
+
 use rustyline::error::ReadlineError;
 use rustyline::{Editor};
 
-use hallo_shell::{shell_helper::ShellHelper,completion::ShellCompleter};
-mod commands;
 
 fn main() {
     let config = rustyline::Config::builder()

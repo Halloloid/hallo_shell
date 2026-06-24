@@ -1,5 +1,8 @@
 use std::process::{Command, Stdio};
 
+use crate::commands::BUILT_IN;
+
+
 pub fn run(cmd: &str) {
     let cmds: Vec<&str> = cmd.split("|").collect();
     let mut cmds_and_args = Vec::<(&str, Vec<&str>)>::new();
@@ -11,6 +14,8 @@ pub fn run(cmd: &str) {
             cmds_and_args.push((k[0], k[1..].to_owned()));
         }
     }
+
+
 
     let mut child1 = Command::new(cmds_and_args[0].0);
     let mut child2 = Command::new(cmds_and_args[1].0);

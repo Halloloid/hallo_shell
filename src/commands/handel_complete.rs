@@ -1,5 +1,5 @@
 
-use hallo_shell::shell_helper::ShellHelper;
+use crate::shell_helper::ShellHelper;
 use rustyline::Editor;
 
 pub fn run(cmd:&str,rl:&mut Editor<ShellHelper,rustyline::history::DefaultHistory>){

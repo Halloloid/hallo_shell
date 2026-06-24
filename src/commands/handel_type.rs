@@ -1,5 +1,4 @@
-use crate::commands::BUILT_IN;
-use hallo_shell::executor::check_file;
+use crate::{commands::BUILT_IN,executor::check_file};
 
 pub fn run(k: &str) {
     match k {

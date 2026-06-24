@@ -1,6 +1,6 @@
 use std::process::Child;
 
-use hallo_shell::{parser::split_by_args,redirect,executor};
+use crate::{parser::split_by_args,redirect,executor};
 
 pub fn run(k: &str,back_jobs:&mut Vec<Option<(u8,Child,String)>>) {
     if k.len() > 4 {
