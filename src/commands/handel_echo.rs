@@ -49,7 +49,7 @@ fn for_backslash<W:Write>(arg: &str,destination:&mut W) {
         }
     }
 
-    writeln!(destination,"{}", msg).unwrap();
+    writeln!(destination,"{}", msg.trim()).unwrap();
 }
 
 fn redirect_output(arg: &str) {

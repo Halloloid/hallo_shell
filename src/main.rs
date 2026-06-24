@@ -43,7 +43,7 @@ fn main() {
         }
         
         match command {
-            _ if command.contains(" | ") => pipelines::run(command),
+            _ if command.contains(" | ") => pipelines::run(command,&mut back_jobs,&mut rl),
             "exit" => break,
             "pwd" => commands::handel_pwd::run(&mut io::stdout()),
             "hallo" => commands::handel_hallo::splash_screen(),
