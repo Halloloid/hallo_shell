@@ -91,4 +91,17 @@ fn main() {
             }
         };
     }
+
+    if history_file{
+        let path = env::var("HISTFILE").unwrap();
+
+        let mut contents = String::new();
+
+        history.iter().for_each(|c|{
+            contents.push_str(c);
+            contents.push('\n');
+        });
+
+        fs::write(path, contents).unwrap();
+    }
 }
