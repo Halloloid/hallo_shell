@@ -66,8 +66,6 @@ fn append_from_file(arg:&str,historys:&mut Vec<String>){
         });
         
     }else {
-        
-
         let historys2 = &historys[..historys.len()-2];
 
         let idx = historys2.iter().rposition(|s| s.starts_with("history -a")).unwrap();
@@ -80,6 +78,5 @@ fn append_from_file(arg:&str,historys:&mut Vec<String>){
         });
 
     }
-
     fs::write(path, contents).unwrap();
 }

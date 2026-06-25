@@ -1,3 +1,4 @@
+use std::{env, fs};
 #[allow(unused_imports)]
 use std::io::{self, Write,};
 use std::{collections::HashMap,process::Child};
@@ -10,6 +11,7 @@ use rustyline::{Editor};
 
 fn main() {
 
+    let history_file = env::var("HISTFILE").is_ok();
     let mut history = Vec::<String>::new();
     
     let config = rustyline::Config::builder()
@@ -26,6 +28,16 @@ fn main() {
 
     let mut back_jobs = Vec::<Option<(u8,Child,String)>>::new();
 
+    if history_file{
+        let data = fs::read_to_string(env::var("HISTFILE").unwrap()).unwrap();
+
+        let data = data.trim();
+
+        for line in data.lines(){
+            let _ = rl.add_history_entry(line);
+            history.push(line.to_string());
+        }
+    }
     
     loop {
 
