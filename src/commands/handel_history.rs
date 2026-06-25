@@ -1,4 +1,11 @@
+use std::fs;
+
 pub fn run(arg:&str,historys:&mut Vec<String>){
+
+    if arg.contains("-r"){
+        read_from_file(arg, historys);
+        return;
+    }
     
     let limit :usize = arg.trim().parse().unwrap_or_default();
     let down = if limit != 0{
@@ -11,5 +18,17 @@ pub fn run(arg:&str,historys:&mut Vec<String>){
     
     for (no,i) in historys.iter().enumerate(){
         println!("  {}  {}",no+down,i);
+    }
+}
+
+fn read_from_file(arg:&str,historys:&mut Vec<String>){
+    let path = arg.trim()[2..].trim();
+
+    let data = fs::read_to_string(path).unwrap();
+
+    for line in data.lines(){
+        if !line.is_empty(){
+            historys.push(line.trim().to_string());
+        }
     }
 }
