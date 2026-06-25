@@ -9,6 +9,9 @@ use rustyline::{Editor};
 
 
 fn main() {
+
+    let mut history = Vec::<String>::new();
+    
     let config = rustyline::Config::builder()
         .completion_type(rustyline::CompletionType::List)
         .build();
@@ -41,6 +44,8 @@ fn main() {
         if command.is_empty(){
             continue;
         }
+
+        history.push(command.to_string());
         
         match command {
             _ if command.contains(" | ") => pipelines::run(command,&mut back_jobs,&mut rl),
@@ -52,6 +57,7 @@ fn main() {
             k if k.starts_with("type") => commands::handel_type::run(&k[5..],&mut io::stdout()),
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
             k if k.starts_with("complete") => {commands::handel_complete::run(&k,&mut rl,&mut io::stdout());},
+            k if k.starts_with("history") => commands::handel_history::run(&mut history),
             _ => {
                 let arg = parser::split_by_args(command);
                 let re = String::from(">");
