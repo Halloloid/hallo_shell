@@ -8,6 +8,9 @@ pub fn run(arg:&str,historys:&mut Vec<String>){
     }else if arg.contains("-w") {
         write_from_file(arg, historys);
         return;
+    }else if arg.contains("-a") {
+        append_from_file(arg, historys);
+        return;
     }
     
     let limit :usize = arg.trim().parse().unwrap_or_default();
@@ -44,6 +47,39 @@ fn write_from_file(arg:&str,historys:&mut Vec<String>){
         contents.push_str(history);
         contents.push('\n');
     });
+
+    fs::write(path, contents).unwrap();
+}
+
+fn append_from_file(arg:&str,historys:&mut Vec<String>){
+    let path = arg.trim()[2..].trim();
+
+    let data = fs::read_to_string(path).unwrap();
+    let mut contents = String::new();
+    
+    contents.push_str(&data);
+
+    if !data.contains("history -a"){
+        historys.iter().for_each(|history| {
+            contents.push_str(history);
+            contents.push('\n');
+        });
+        
+    }else {
+        
+
+        let historys2 = &historys[..historys.len()-2];
+
+        let idx = historys2.iter().rposition(|s| s.starts_with("history -a")).unwrap();
+        
+        let historys3 = &historys[idx+1..];
+        
+        historys3.iter().for_each(|history| {
+            contents.push_str(history);
+            contents.push('\n');
+        });
+
+    }
 
     fs::write(path, contents).unwrap();
 }
