@@ -4,8 +4,7 @@ use crate::{
 };
 use rustyline::Editor;
 use std::{
-    io,
-    process::{Child, Command, Stdio},
+    io::{self, Write}, process::{Child, Command, Stdio},
 };
 
 use crate::commands::{BUILT_IN, handel_complete, handel_echo};
@@ -23,8 +22,8 @@ pub fn run(
             cmds_and_args.push((k[0], vec![]));
         } else {
             let mut clean_args = Vec::new();
-            for arg in k[1..].to_owned(){
-                let cleaned = arg.trim_matches(|x| x=='"' || x == '\'');
+            for arg in k[1..].to_owned() {
+                let cleaned = arg.trim_matches(|x| x == '"' || x == '\'');
                 clean_args.push(cleaned);
             }
             cmds_and_args.push((k[0], clean_args));
@@ -33,14 +32,6 @@ pub fn run(
 
     if BUILT_IN.contains(&cmds_and_args[0].0) {
         let mut child2 = Command::new(cmds_and_args[1].0);
-        let mut cmd = String::new();
-        cmd.push_str(&cmds_and_args[0].0);
-        cmd.push(' ');
-
-        for i in &cmds_and_args[0].1 {
-            cmd.push_str(i);
-            cmd.push(' ');
-        }
 
         if !cmds_and_args[1].1.is_empty() {
             child2.args(cmds_and_args[1].1.to_owned());
@@ -49,28 +40,12 @@ pub fn run(
         let mut running_child = child2.stdin(Stdio::piped()).spawn().unwrap();
 
         let mut pipe_to_child2 = running_child.stdin.take().unwrap();
-
-        match cmds_and_args[0].0 {
-            "echo" => handel_echo::run(&cmd.trim(), back_jobs, &mut pipe_to_child2),
-            "complete" => handel_complete::run(&cmd.trim(), rl, &mut pipe_to_child2),
-            "jobs" => handel_jobs::run(back_jobs, &mut pipe_to_child2),
-            "pwd" => handel_pwd::run(&mut pipe_to_child2),
-            "type" => handel_type::run(&cmd[5..].trim(), &mut pipe_to_child2),
-            _ => {}
-        }
+        execute_builtin(cmds_and_args[0].0, &cmds_and_args[0].1, &mut pipe_to_child2, back_jobs, rl);
 
         drop(pipe_to_child2);
 
         let _ = running_child.wait().unwrap();
     } else if BUILT_IN.contains(&cmds_and_args[1].0) {
-        let mut cmd = String::new();
-        cmd.push_str(&cmds_and_args[1].0);
-        cmd.push(' ');
-
-        for i in &cmds_and_args[1].1 {
-            cmd.push_str(i);
-            cmd.push(' ');
-        }
 
         let mut child1 = Command::new(cmds_and_args[0].0);
 
@@ -83,14 +58,8 @@ pub fn run(
         let mut running_child1 = child1.spawn().unwrap();
         let _ = running_child1.stdout.take().unwrap();
 
-        match cmds_and_args[1].0 {
-            "echo" => handel_echo::run(&cmd.trim(), back_jobs, &mut io::stdout()),
-            "complete" => handel_complete::run(&cmd.trim(), rl, &mut io::stdout()),
-            "jobs" => handel_jobs::run(back_jobs, &mut io::stdout()),
-            "pwd" => handel_pwd::run(&mut io::stdout()),
-            "type" => handel_type::run(&cmd[5..].trim(), &mut io::stdout()),
-            _ => {}
-        }
+        execute_builtin(cmds_and_args[1].0, &cmds_and_args[1].1, &mut io::stdout(), back_jobs, rl);
+        
     } else {
         let count = cmds_and_args.len();
         let mut childs = Vec::<Child>::new();
@@ -114,7 +83,7 @@ pub fn run(
             if i < count - 1 {
                 command.stdout(Stdio::piped());
             } else {
-                command.stdout(io::stdout());
+                command.stdout(Stdio::inherit());
             }
 
             let mut child = command.spawn().unwrap();
@@ -131,5 +100,30 @@ pub fn run(
         for mut child in childs {
             let _ = child.wait().unwrap();
         }
+    }
+}
+
+fn execute_builtin<W: Write>(
+    builtin_name: &str,
+    args: &[&str],
+    destination: &mut W,
+    back_jobs: &mut Vec<Option<(u8, Child, String)>>,
+    rl: &mut Editor<ShellHelper, rustyline::history::DefaultHistory>,
+) {
+    let mut cmd = builtin_name.to_string();
+    args.iter().for_each(|c| {
+        cmd.push(' ');
+        cmd.push_str(c);
+    });
+
+    let cmd = cmd.trim();
+
+    match builtin_name {
+        "echo" => handel_echo::run(&cmd.trim(), back_jobs, destination),
+        "complete" => handel_complete::run(&cmd.trim(), rl, destination),
+        "jobs" => handel_jobs::run(back_jobs, destination),
+        "pwd" => handel_pwd::run(destination),
+        "type" => handel_type::run(&cmd[5..].trim(), destination),
+        _ => {}
     }
 }
