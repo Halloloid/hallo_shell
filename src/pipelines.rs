@@ -22,7 +22,12 @@ pub fn run(
         if k.len() == 1 {
             cmds_and_args.push((k[0], vec![]));
         } else {
-            cmds_and_args.push((k[0], k[1..].to_owned()));
+            let mut clean_args = Vec::new();
+            for arg in k[1..].to_owned(){
+                let cleaned = arg.trim_matches(|x| x=='"' || x == '\'');
+                clean_args.push(cleaned);
+            }
+            cmds_and_args.push((k[0], clean_args));
         }
     }
 
@@ -87,24 +92,44 @@ pub fn run(
             _ => {}
         }
     } else {
-        let mut child1 = Command::new(cmds_and_args[0].0);
-        let mut child2 = Command::new(cmds_and_args[1].0);
+        let count = cmds_and_args.len();
+        let mut childs = Vec::<Child>::new();
 
-        if !cmds_and_args[0].1.is_empty() {
-            child1.args(cmds_and_args[0].1.to_owned());
+        let mut previous_stdout: Option<std::process::ChildStdout> = None;
+
+        for i in 0..count {
+            let (cmd, args) = &cmds_and_args[i];
+
+            let mut command = Command::new(cmd);
+            if !args.is_empty() {
+                command.args(args.to_owned());
+            }
+
+            if let Some(pipe) = previous_stdout {
+                command.stdin(Stdio::from(pipe));
+            } else {
+                command.stdin(Stdio::inherit());
+            }
+
+            if i < count - 1 {
+                command.stdout(Stdio::piped());
+            } else {
+                command.stdout(io::stdout());
+            }
+
+            let mut child = command.spawn().unwrap();
+
+            if i < count - 1 {
+                previous_stdout = Some(child.stdout.take().unwrap());
+            } else {
+                previous_stdout = None;
+            }
+
+            childs.push(child);
         }
 
-        child1.stdout(Stdio::piped());
-
-        let mut running_child1 = child1.spawn().unwrap();
-        let child_std = running_child1.stdout.take().unwrap();
-
-        if !cmds_and_args[1].1.is_empty() {
-            child2.args(cmds_and_args[1].1.to_owned());
+        for mut child in childs {
+            let _ = child.wait().unwrap();
         }
-
-        let mut running_child2 = child2.stdin(child_std).spawn().unwrap();
-
-        let _ = running_child2.wait().unwrap();
     }
 }
