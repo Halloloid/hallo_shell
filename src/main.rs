@@ -45,6 +45,7 @@ fn main() {
             continue;
         }
 
+        let _ = rl.add_history_entry(command);
         history.push(command.to_string());
         
         match command {
