@@ -13,8 +13,17 @@ pub fn check_for_expansion(cmd: &str, variables: &mut HashMap<String, String>) -
         } else {
             let vars: Vec<&str> = i.split('$').collect();
             new_cmd.push_str(vars[0]);
-            let value = variables.get(vars[1]).unwrap();
+            let mut value = vars[1];
+            let mut extra = "";
+            if value.contains('{') && value.contains('}') {
+                let start = value.find('{').unwrap();
+                let end = value.find('}').unwrap();
+                extra = &value[end + 1..];
+                value = &value[start + 1..end];
+            }
+            let value = variables.get(value).unwrap();
             new_cmd.push_str(value);
+            new_cmd.push_str(extra);
             new_cmd.push(' ');
         }
     }

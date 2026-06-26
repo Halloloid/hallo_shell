@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 pub fn run(k: &str, variables: &mut HashMap<String, String>) {
-    if k.contains("-p") {
+    if k.contains(" -p ") {
         let variable = k.strip_prefix("declare -p ").unwrap();
         let s = variables.get(variable);
 
