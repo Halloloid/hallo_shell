@@ -20,6 +20,10 @@ pub fn run(k: &str, variables: &mut HashMap<String, String>) {
         let key = key_value[0].trim();
         let value = key_value[1].trim();
 
+        if key.starts_with(|c:char| c.is_ascii_digit()) || key.chars().any(|c:char | !c.is_ascii_alphanumeric() && c!='_' ) {
+            println!("declare: `{}={}': not a valid identifier",key,value);
+            return;
+        }
         variables.insert(key.to_string(), value.to_string());
     }
 }
