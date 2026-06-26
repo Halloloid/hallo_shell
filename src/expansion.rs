@@ -21,8 +21,10 @@ pub fn check_for_expansion(cmd: &str, variables: &mut HashMap<String, String>) -
                 extra = &value[end + 1..];
                 value = &value[start + 1..end];
             }
-            let value = variables.get(value).unwrap();
-            new_cmd.push_str(value);
+            let value = variables.get(value);
+            if let Some(value) = value{
+                new_cmd.push_str(value);
+            }
             new_cmd.push_str(extra);
             new_cmd.push(' ');
         }
