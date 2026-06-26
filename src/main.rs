@@ -71,6 +71,7 @@ fn main() {
             k if k.starts_with("cd") => commands::handel_cd::run(&k[3..]),
             k if k.starts_with("complete") => {commands::handel_complete::run(&k,&mut rl,&mut io::stdout());},
             k if k.starts_with("history") => commands::handel_history::run(&k[7..],&mut history),
+            k if k.starts_with("declare") => commands::handel_declare::run(&k),
             _ => {
                 let arg = parser::split_by_args(command);
                 let re = String::from(">");
