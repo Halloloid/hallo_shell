@@ -3,6 +3,7 @@ use std::{env, fs};
 use std::io::{self, Write,};
 use std::{collections::HashMap,process::Child};
 
+use hallo_shell::expansion;
 use hallo_shell::{commands, executor, parser, pipelines,shell_helper::ShellHelper,completion::ShellCompleter};
 
 use rustyline::error::ReadlineError;
@@ -60,6 +61,12 @@ fn main() {
 
         let _ = rl.add_history_entry(command);
         history.push(command.to_string());
+
+        let command = expansion::check_for_expansion(command, &mut variables);
+        let command = command.trim();
+
+        // println!("{:?}",variables);
+
         
         match command {
             _ if command.contains(" | ") => pipelines::run(command,&mut back_jobs,&mut rl),

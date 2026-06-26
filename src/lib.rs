@@ -5,6 +5,7 @@ pub mod shell_helper;
 pub mod completion;
 pub mod pipelines;
 pub mod commands;
+pub mod expansion;
 
 pub mod constantfns {
     pub fn trim_inside(k: &str) -> String {
