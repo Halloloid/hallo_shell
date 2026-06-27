@@ -65,9 +65,6 @@ fn main() {
         let command = expansion::check_for_expansion(command, &mut variables);
         let command = command.trim();
 
-        // println!("{:?}",variables);
-
-        
         match command {
             _ if command.contains(" | ") => pipelines::run(command,&mut back_jobs,&mut rl),
             "exit" => break,
