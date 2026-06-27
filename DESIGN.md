@@ -43,5 +43,13 @@ stdin -> rustyline -> REPL Loop -> if builtin -> commands
 ```
 further they are checked if backgroun job, contains pipelines, output redirection and much more
 
-## REPL Loop
-it's present in the main.rs 
+## The REPL Loop
+it's present in the main.rs so it checkes if the command given matches any of the builtin commands present in the Built-ins commands else it goes to the executor.rs were those commands are executed with the help of `std::process::Command::new(<command>)` 
+
+i had made it a infinte loop which runs until the Built-ins command `exit` is typed we can say that it is the entry point for the commands to be distinguised with the help of **match** if its a Built-ins command then which Built-ins command it is else then its a external command
+
+for checking its which Built-ins command i had used direct command name if it does not need any arguments else i check it with `.starts_with()`
+
+the hardest part may sound funny but it was for me to differnciate if there is pipeline or else Built-ins command its else if its external command
+
+## Tokenizer
