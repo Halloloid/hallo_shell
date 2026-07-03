@@ -67,3 +67,40 @@ It's the thing contains most of the thing and connected most of the project and 
 It have only one function and i had pretty much added every thing inside not got time to optimize it but its working so now the approach
 
 so in the function there arguments that are passed are background jobs if there is redirection if redirection then is stdout or stderr and inside it is if apppend or write or is have & so it is a background jobs and then prefix of the command is extracted and other is passed as a argument to and output is printed in terminal or inside a file if there is redirection and in aslo checks if the command present in env and if its execuatbel or not
+
+## Built-ins
+```
+hallo
+cd
+echo
+pwd
+type
+complete
+jobs
+history
+declare
+exit
+```
+
+- Navigation — `cd`, `pwd`
+- Quoting / escaping — `echo` supports single & double quotes and handles backslashes (escape sequences)
+- `hallo` — display a simple banner
+- `type` — check whether a command is built-in
+- `complete` — register or inspect custom completions
+- `exit` — quit the shell
+- `jobs`- helps to see all running and done jobs which are in the background
+- `history` - see all the command you typed till now from the start of the shell
+- `declare` - helps to declare a shell variables
+
+
+## Output Redirection
+
+So it Support the stdout and stderr Redirection with `>`,`1>` and `2>` respectively and that to be for both the built-ins and the external commands
+
+the logic is present inside the executor.rs nad the redirect.rs so in the exector first its seacrhed is there any redirection if it present then its pased to the redirect where the output of the command is written or appended in the file given if the file not present then its created and stored and this redirect command is handedled differently form the normal command so they are divided by a if-else branch
+
+## Pipelines
+
+Before creating this feature i did'nt knew about how it works so it took me quite a amount of time to understand what is this and how does it works 
+
+so let me explain what does this `|` pipline do when its between two commands basically the stdout from the first command is given as the stdin to the second command and the both command are running at a time its not like first the first command runs then after that the second command runs and it works same for when there is multiple commands and in between them there is pipline
