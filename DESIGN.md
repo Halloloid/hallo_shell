@@ -104,3 +104,9 @@ the logic is present inside the executor.rs nad the redirect.rs so in the execto
 Before creating this feature i did'nt knew about how it works so it took me quite a amount of time to understand what is this and how does it works 
 
 so let me explain what does this `|` pipline do when its between two commands basically the stdout from the first command is given as the stdin to the second command and the both command are running at a time its not like first the first command runs then after that the second command runs and it works same for when there is multiple commands and in between them there is pipline
+
+the code is pipline.rs so first in the REPL checked if there is a pipline in the command then its passed to this file then the whole command is splited with `|` then inside this they are stored each command with its argument `cmds_and_args = Vec::<(&str, Vec<&str>)>::new()` now you might wonder why had not used hashmap its because i need the order and here order is necessary so i had used this way then i there is previous_stdout which ther to store the previous command stdout which can be used to pipe the it to the current stdin
+
+So let me explain it for Dual command first both commands are spawned with there args provided then the first command stdout a pipe is created using Stdio::piped() and then in the second command inside its stdin its taken like this command1.stdout.take and is passed to stdin so this way its given as a stding to the next command
+
+Now for muliticommand pipline as i said earlier i stored the preivous stdout and pass it to the current stdin by creating a pipe and taking the stout until its the last child then for the last commad its stdout is given to terminal where the whole output is printed
