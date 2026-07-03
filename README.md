@@ -2,6 +2,8 @@
 
 ![screenshot](https://github.com/user-attachments/assets/73bd6c02-fd9f-4535-aecc-b5fe6cc69345)
 
+blog :- https://my-hallo-project-blogs.hashnode.dev/wonderd-about-a-shell-in-rust
+
 A minimal shell implemented in Rust.
 
 Right now this minimal shell has:
