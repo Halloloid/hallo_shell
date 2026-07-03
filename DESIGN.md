@@ -53,3 +53,10 @@ for checking its which Built-ins command i had used direct command name if it do
 the hardest part may sound funny but it was for me to differnciate if there is pipeline or else Built-ins command its else if its external command
 
 ## Tokenizer
+
+It's Present in the parser.rs it basically help convert the whole command in to vec of argument so i can use them as the arg for the command so its supported or the external and as well as builtin command such as for the `echo` for supporting the Quoteing inside the echo 
+
+So i had two function for tokenization one is **split_by_args** for spliting the args which is not quoted and another is **split_by_args_quote** which help's to split the args inside quote as inside quote there is different rules of tokenization and without quotes there different rules of tokenization 
+
+So what i did in **split_by_args** is i convert the command into characters iterabel to see the upcoming character then i perform the action according to ex if the character is `\` so i check if the next character is going to be a `\`,`n`,`'`,`"` so then i see they are esacpe sequence and work and written logic accordin to it this same approach is also used in **split_by_args_quotes** but in a little different way
+
