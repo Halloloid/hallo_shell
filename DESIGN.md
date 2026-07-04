@@ -110,3 +110,9 @@ the code is pipline.rs so first in the REPL checked if there is a pipline in the
 So let me explain it for Dual command first both commands are spawned with there args provided then the first command stdout a pipe is created using Stdio::piped() and then in the second command inside its stdin its taken like this command1.stdout.take and is passed to stdin so this way its given as a stding to the next command
 
 Now for muliticommand pipline as i said earlier i stored the preivous stdout and pass it to the current stdin by creating a pipe and taking the stout until its the last child then for the last commad its stdout is given to terminal where the whole output is printed
+
+## Background Jobs
+
+before executing the command its checked afte split with wihitespace is its last element is `&` then its classified as a background job and then its runned using .spawn() nad stored in a vec which stores all the background jobs currenlty running and to see which is the latest backround job used the vecs len - 1 to get the latest and -2 for the second latest backgound job as they are showned using + nad - respectively and when the background job is completed its removed from the vec
+
+to see all the backround jobs use `jobs` command basically its just print that vec its also stores the child and the job no in that vec its like a tuple at and here also i had not used hashmap as i need the order for getting the latest and second latest jobs
