@@ -124,3 +124,18 @@ for the builtin and external command completion i just provided all the command 
 ## History
 
 Making this feature was prettey straight forward created a vec of strings so before the command goes to match statement in the REPL it its appended in this vec and in rustyline vec also so that it can respond to the up and down arrow nad as all the command typed is stored in the hostory vec so it can be written inside the file or if there is already and there is append command then for this this logic its little curvy forwarded so i can just not add all the command i need to append that much commnads which was written after the previous history append command else if there is no previous history append command in that file than just append all the history command
+
+## Parameter Expansion 
+
+its also implementing was easy as i created a hashmap to store the key and the value which was created using `declare` command and i need to implenent it like if that key is used with `$` or `${}` then i need replace it with the value there for the key so in both builtin and external command i check if there is any arg in the command which like the above pattern starts with dollar then its seached in the hashmap if the key is present then its repalced with the value else the `$` and `${}` is replace by empty `''` its one of the easiest feature in this whole shell project
+
+# So hope you liked this project if read up to here so here is something i faced and learned
+
+## **Challenges & What I had learned in this Whole Journey**
+So for Challenges i would say this whole project was a challenge for me at first but the most challenging parts were 
+- handling external commands
+- echo Quoting
+- piplines
+- backround jobs and output redirection in external commands
+
+Things i have learned in this its that i came to know so many linux commands and shell commands how pipelines works and how other commands so system programming concepts handling back jobs and much more
