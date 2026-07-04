@@ -113,6 +113,12 @@ Now for muliticommand pipline as i said earlier i stored the preivous stdout and
 
 ## Background Jobs
 
-before executing the command its checked afte split with wihitespace is its last element is `&` then its classified as a background job and then its runned using .spawn() nad stored in a vec which stores all the background jobs currenlty running and to see which is the latest backround job used the vecs len - 1 to get the latest and -2 for the second latest backgound job as they are showned using + nad - respectively and when the background job is completed its removed from the vec
+before executing the command its checked after split with wihitespace is its last element is `&` then its classified as a background job and then its runned using .spawn() nad stored in a vec which stores all the background jobs currenlty running and to see which is the latest backround job used the vecs len - 1 to get the latest and -2 for the second latest backgound job as they are showned using + nad - respectively and when the background job is completed its removed from the vec
 
 to see all the backround jobs use `jobs` command basically its just print that vec its also stores the child and the job no in that vec its like a tuple at and here also i had not used hashmap as i need the order for getting the latest and second latest jobs
+
+## Tab Completion
+
+for the builtin and external command completion i just provided all the command start with how much command had typed before tab all possible are given to rustyline completion then it handel the completeion similarly done for file and directories completion checked if thats a directory then its ended with a `/` for if its a file its ended with nothing so for checking if its a directory for file its checked using its metadata if its a file or a directory most of the autocompletion and key binding is handeled by the rustyline is just needed provide it some resorses and it does the job 
+
+## History
