@@ -139,3 +139,10 @@ So for Challenges i would say this whole project was a challenge for me at first
 - backround jobs and output redirection in external commands
 
 Things i have learned in this its that i came to know so many linux commands and shell commands how pipelines works and how other commands so system programming concepts handling back jobs and much more
+
+## Yes There are some limitaions in it and that are
+- input redirection
+- other bulit-ins command
+- handling more than one builtin command in the pipelines
+- handling parallel command executions
+- much more 
