@@ -4,6 +4,8 @@
 
 blog :- https://my-hallo-project-blogs.hashnode.dev/wonderd-about-a-shell-in-rust
 
+For details about the architecture and design decisions, check out the [DESIGN.md](./DESIGN.md).
+
 A minimal shell implemented in Rust.
 
 Right now this minimal shell has:
